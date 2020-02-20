@@ -34,6 +34,6 @@ Resources:
         Name: !Ref Name
         Region: !Ref Region
         Stage: !Ref Stage
-      TemplateURL: !Sub '{StackUrl}/vpc.yaml'
+      TemplateURL: !Sub {StackUrl}vpc.yaml
 
 #Outputs:
