@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+#Metadata:
+
+Parameters:
+
+  CidrClassB:
+    Type: String
+
+  Name:
+    Type: String
+
+  Region:
+    Type: String
+
+  Stage:
+    Type: String
+
+#Mappings:
+
+#Conditions:
+
+Resources:
+
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Sub 10.${CidrClassB}.0.0/16
+      Tags:
+        - Key: Name
+          Value: !Sub ${Name}-${Region}-${Stage}-vpc
+
+Outputs:
+
+  CidrBlock:
+    Value: !GetAtt VPC.CidrBlock
