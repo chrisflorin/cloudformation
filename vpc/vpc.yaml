@@ -33,4 +33,4 @@ Resources:
 Outputs:
 
   CidrBlock:
-    Value: !GetAtt VPC.CidrBlock
+    Value: !GetAtt Vpc.CidrBlock

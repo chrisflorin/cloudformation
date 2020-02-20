@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+Metadata:
+
+Parameters:
+
+  CidrBlock:
+    Type: String
+
+  VpcId:
+    Type: String
+
+#Mappings:
+
+#Conditions:
+
+Resources:
+
+  NATSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref AWS::StackName
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref CidrBlock
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref CidrBlock
+      VpcId: !Ref VpcId
+
+#Outputs:
