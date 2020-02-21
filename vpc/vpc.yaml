@@ -22,6 +22,83 @@ Parameters:
 
 Resources:
 
+  PrivateNetworkAcl:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PrivateNetworkAclSubnetAAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref PrivateNetworkAcl
+      SubnetId: !Ref PrivateSubnetA
+
+  PrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs:!Ref Region]
+      CidrBlock: !Sub 10.${CidrClassB}.16.0/20
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PrivateSubnetARouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PrivateSubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetA
+      RouteTableId: !Ref PrivateSubnetARouteTable
+    DependsOn:
+      - PrivateSubnetA
+      - PrivateSubnetARouteTable
+
+  PublicNetworkAcl:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PublicNetworkAclSubnetAAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref PublicNetworkAcl
+      SubnetId: !Ref PublicSubnetA
+
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs:!Ref Region]
+      CidrBlock: !Sub 10.${CidrClassB}.0.0/20
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PublicSubnetARouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+    DependsOn:
+      - Vpc
+
+  PrivateSubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetB
+      RouteTableId: !Ref PrivateSubnetBRouteTable
+    DependsOn:
+      - PrivateSubnetB
+      - PrivateSubnetBRouteTable
+
   Vpc:
     Type: AWS::EC2::VPC
     Properties:
