@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: ---
-Metadata:
+#Metadata:
 
 Parameters:
 
@@ -16,9 +16,9 @@ Parameters:
   VpcId:
     Type: String
 
-Mappings:
+#Mappings:
 
-Conditions:
+#Conditions:
 
 Resources:
 
@@ -93,4 +93,4 @@ Resources:
           CidrIp: '0.0.0.0/0'
       VpcId: !Ref VpcId
 
-Outputs:
+#Outputs:
