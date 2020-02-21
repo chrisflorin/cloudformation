@@ -161,3 +161,6 @@ Outputs:
 
   CidrBlock:
     Value: !GetAtt Vpc.CidrBlock
+
+  VpcId:
+    Value: !Ref Vpc
