@@ -39,7 +39,7 @@ Resources:
   BastionStack:
     Type: AWS::CloudFormation::Stack
     Condition:
-      - !Ref HasBastion
+      - HasBastion
     Properties:
       Parameters:
         AmiId: !Ref BastionAmiId
