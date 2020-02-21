@@ -90,14 +90,14 @@ Resources:
     DependsOn:
       - Vpc
 
-  PrivateSubnetBRouteTableAssociation:
+  PublicSubnetARouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnetB
-      RouteTableId: !Ref PrivateSubnetBRouteTable
+      SubnetId: !Ref PrivateSubnetA
+      RouteTableId: !Ref PrivateSubnetARouteTable
     DependsOn:
-      - PrivateSubnetB
-      - PrivateSubnetBRouteTable
+      - PublicSubnetA
+      - PublicSubnetARouteTable
 
   Vpc:
     Type: AWS::EC2::VPC
