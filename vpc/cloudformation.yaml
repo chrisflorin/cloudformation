@@ -4,6 +4,14 @@ Description: ---
 
 Parameters:
 
+  BastionAmiId:
+    Default: none
+    Type: String
+
+  BastionInstanceType:
+    Default: t3.nano
+    Type: String
+
   CidrClassB:
     Type: String
 
@@ -22,9 +30,22 @@ Parameters:
 
 #Mappings:
 
-#Conditions:
+Conditions:
+
+  HasBastion: !Not [ !Equals [ !Ref BastionAmiId, none ] ]
 
 Resources:
+
+  BastionStack:
+    Type: AWS::CloudFormation::Stack
+    Conditions:
+      - HasBastion
+    Properties:
+      Parameters:
+        AmiId: !Ref BastionAmiId
+        InstanceType: !Ref BastionInstanceType
+        Stage: !Ref Stage
+        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack
