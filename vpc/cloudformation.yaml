@@ -38,7 +38,7 @@ Resources:
 
   BastionStack:
     Type: AWS::CloudFormation::Stack
-    Conditions:
+    Condition:
       - HasBastion
     Properties:
       Parameters:
@@ -46,6 +46,7 @@ Resources:
         InstanceType: !Ref BastionInstanceType
         Stage: !Ref Stage
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
+      TemplateUrl: !Sub ${StackUrl]/bastion.yaml
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack
