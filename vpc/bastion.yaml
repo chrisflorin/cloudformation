@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+Metadata:
+
+Parameters:
+
+  AmiId:
+    Type: String
+
+  InstanceType:
+    Type: String
+
+  Stage:
+    Type: String
+
+  VpcId:
+    Type: String
+
+Mappings:
+
+Conditions:
+
+Resources:
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate: !Ref LaunchTemplate
+      MaxSize: 1
+      MinSize: 1
+      Tags:
+        - Key: Stage
+          Value: !Ref Stage
+      VpcZoneIdentifier:
+    DependsOn:
+      - LaunchTemplate
+
+  ElasticIp:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${AWS::StackName}-associate-address
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2: AssociateAddress
+                - Resource:
+                  - '*'
+
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref IamRole
+    DependsOn:
+      - IamRole
+
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        IamInstanceProfile: !Ref IamInstanceProfile
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        SecurityGroups:
+          - !Ref SecurityGroup
+    DependsOn:
+      - IamInstanceProfile
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${VpcId}-bastion-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: '0.0.0.0/0'
+      VpcId: !Ref VpcId
+
+Outputs:
