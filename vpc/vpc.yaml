@@ -38,7 +38,7 @@ Resources:
   PrivateSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [0, !GetAZs:!Ref Region]
+      AvailabilityZone: !Select [0, !GetAZs '']
       CidrBlock: !Sub 10.${CidrClassB}.16.0/20
       VpcId: !Ref Vpc
     DependsOn:
