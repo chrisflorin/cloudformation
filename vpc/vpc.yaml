@@ -162,5 +162,8 @@ Outputs:
   CidrBlock:
     Value: !GetAtt Vpc.CidrBlock
 
+  PublicSubnetIdList:
+    Value: !Join [',', [ !Ref PublicSubnetA ] ]
+
   VpcId:
     Value: !Ref Vpc

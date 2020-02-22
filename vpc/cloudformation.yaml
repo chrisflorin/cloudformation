@@ -43,9 +43,12 @@ Resources:
       Parameters:
         AmiId: !Ref BastionAmiId
         InstanceType: !Ref BastionInstanceType
+        PublicSubnetIdList: !GetAtt VpcSubStack.Outputs.PublicSubnetIdList
         Stage: !Ref Stage
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/bastion.yaml
+    DependsOn:
+      - VpcSubStack
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack

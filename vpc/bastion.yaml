@@ -13,6 +13,9 @@ Parameters:
   Stage:
     Type: String
 
+  PublicSubnetIdList:
+    Type: CommaDelimitedList
+
   VpcId:
     Type: String
 
@@ -31,7 +34,7 @@ Resources:
       Tags:
         - Key: Stage
           Value: !Ref Stage
-      VpcZoneIdentifier:
+      VpcZoneIdentifier: !Ref PublicSubnetIdList
     DependsOn:
       - LaunchTemplate
 
