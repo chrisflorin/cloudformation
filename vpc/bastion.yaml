@@ -56,6 +56,7 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - sts:AssumeRole
+      Path: '/'
       Policies:
         - PolicyName: !Sub ${AWS::StackName}-associate-address
           PolicyDocument:
