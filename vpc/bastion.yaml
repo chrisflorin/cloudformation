@@ -84,6 +84,7 @@ Resources:
           - !Ref SecurityGroup
     DependsOn:
       - IamInstanceProfile
+      - SecurityGroup
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
