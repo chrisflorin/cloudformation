@@ -55,13 +55,12 @@ Resources:
               Service: ec2.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: !Sub ${AWS::StackName}-associate-address
-          PolicyDocument:
+        - PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                  - ec2: AssociateAddress
+                  - ec2:AssociateAddress
                 Resource:
                   - '*'
 
