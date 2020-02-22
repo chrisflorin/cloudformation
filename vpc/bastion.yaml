@@ -79,7 +79,7 @@ Resources:
           Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
-        SecurityGroups:
+        SecurityGroupIds:
           - !Ref SecurityGroup
 
   SecurityGroup:
