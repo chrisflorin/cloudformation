@@ -47,8 +47,6 @@ Resources:
         Stage: !Ref Stage
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/bastion.yaml
-    DependsOn:
-      - VpcSubStack
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack

@@ -26,8 +26,6 @@ Resources:
     Type: AWS::EC2::NetworkAcl
     Properties:
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PrivateNetworkAclEntryAllowVpcIn:
     Type: AWS::EC2::NetworkAclEntry
@@ -38,9 +36,6 @@ Resources:
       Protocol: -1
       RuleAction: allow
       RuleNumber: 1
-    DependsOn:
-      - PrivateNetworkAcl
-      - Vpc
 
   PrivateNetworkAclEntryAllowVpcOut:
     Type: AWS::EC2::NetworkAclEntry
@@ -51,9 +46,6 @@ Resources:
       Protocol: -1
       RuleAction: allow
       RuleNumber: 1
-    DependsOn:
-      - PrivateNetworkAcl
-      - Vpc
 
   PrivateNetworkAclSubnetAAssociation:
     Type: AWS::EC2::SubnetNetworkAclAssociation
@@ -67,31 +59,22 @@ Resources:
       AvailabilityZone: !Select [0, !GetAZs '']
       CidrBlock: !Sub 10.${CidrClassB}.16.0/20
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PrivateSubnetARouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PrivateSubnetARouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnetA
       RouteTableId: !Ref PrivateSubnetARouteTable
-    DependsOn:
-      - PrivateSubnetA
-      - PrivateSubnetARouteTable
 
   PublicNetworkAcl:
     Type: AWS::EC2::NetworkAcl
     Properties:
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PublicNetworkAclEntryAllowAllIn:
     Type: AWS::EC2::NetworkAclEntry
@@ -102,8 +85,6 @@ Resources:
       Protocol: -1
       RuleAction: allow
       RuleNumber: 1
-    DependsOn:
-      - PublicNetworkAcl
 
   PublicNetworkAclEntryAllowAllOut:
     Type: AWS::EC2::NetworkAclEntry
@@ -114,8 +95,6 @@ Resources:
       Protocol: -1
       RuleAction: allow
       RuleNumber: 1
-    DependsOn:
-      - PublicNetworkAcl
 
   PublicNetworkAclSubnetAAssociation:
     Type: AWS::EC2::SubnetNetworkAclAssociation
@@ -130,24 +109,17 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.0.0/20
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PublicSubnetARouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref Vpc
-    DependsOn:
-      - Vpc
 
   PublicSubnetARouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnetA
-      RouteTableId: !Ref PrivateSubnetARouteTable
-    DependsOn:
-      - PublicSubnetA
-      - PublicSubnetARouteTable
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicSubnetARouteTable
 
   Vpc:
     Type: AWS::EC2::VPC

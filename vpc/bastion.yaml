@@ -5,7 +5,7 @@ Description: ---
 Parameters:
 
   AmiId:
-    Type: String
+    Type: AWS::EC2::Image::Id
 
   InstanceType:
     Type: String
@@ -28,15 +28,16 @@ Resources:
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      LaunchTemplate: !Ref LaunchTemplate
-      MaxSize: 1
-      MinSize: 1
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '1'
+      MinSize: '1'
       Tags:
         - Key: Stage
           Value: !Ref Stage
-      VpcZoneIdentifier: !Ref PublicSubnetIdList
-    DependsOn:
-      - LaunchTemplate
+          PropagateAtLaunch: true
+      VPCZoneIdentifier: !Ref PublicSubnetIdList
 
   ElasticIp:
     Type: AWS::EC2::EIP
@@ -63,28 +64,25 @@ Resources:
               - Effect: Allow
                 Action:
                   - ec2: AssociateAddress
-                Resource: '*'
+                Resource:
+                  - '*'
 
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - !Ref IamRole
-    DependsOn:
-      - IamRole
 
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        IamInstanceProfile: !Ref IamInstanceProfile
+        IamInstanceProfile:
+          Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         SecurityGroups:
           - !Ref SecurityGroup
-    DependsOn:
-      - IamInstanceProfile
-      - SecurityGroup
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
