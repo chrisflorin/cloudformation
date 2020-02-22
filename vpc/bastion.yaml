@@ -59,7 +59,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - ec2: AssociateAddress
-                - Resource:
+                Resource:
                   - '*'
 
   IamInstanceProfile:
