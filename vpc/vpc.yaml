@@ -78,6 +78,30 @@ Resources:
       SubnetId: !Ref PrivateSubnetA
       RouteTableId: !Ref PrivateSubnetARouteTable
 
+  PrivateNetworkAclSubnetBAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref PrivateNetworkAcl
+      SubnetId: !Ref PrivateSubnetB
+
+  PrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Sub 10.${CidrClassB}.16.0/20
+      VpcId: !Ref Vpc
+
+  PrivateSubnetBRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+
+  PrivateSubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetB
+      RouteTableId: !Ref PrivateSubnetBRouteTable
+
   PublicNetworkAcl:
     Type: AWS::EC2::NetworkAcl
     Properties:
@@ -134,6 +158,40 @@ Resources:
       DestinationCidrBlock: '0.0.0.0/0'
       GatewayId: !Ref InternetGateway
       RouteTableId: !Ref PublicSubnetARouteTable
+    DependsOn:
+      - VpcGatewayAttachment
+
+  PublicNetworkAclSubnetBAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      NetworkAclId: !Ref PublicNetworkAcl
+      SubnetId: !Ref PublicSubnetB
+
+  PublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Sub 10.${CidrClassB}.0.0/20
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
+
+  PublicSubnetBRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+
+  PublicSubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetB
+      RouteTableId: !Ref PublicSubnetBRouteTable
+
+  PublicSubnetBRouteTableInternetRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicSubnetBRouteTable
     DependsOn:
       - VpcGatewayAttachment
 
