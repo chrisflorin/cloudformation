@@ -25,19 +25,19 @@ Parameters:
 
 Resources:
 
-  AutoScalingGroup:
-    Type: AWS::AutoScaling::AutoScalingGroup
-    Properties:
-      LaunchTemplate:
-        LaunchTemplateId: !Ref LaunchTemplate
-        Version: !GetAtt LaunchTemplate.LatestVersionNumber
-      MaxSize: '1'
-      MinSize: '1'
-      Tags:
-        - Key: Stage
-          Value: !Ref Stage
-          PropagateAtLaunch: true
-      VPCZoneIdentifier: !Ref PublicSubnetIdList
+#  AutoScalingGroup:
+#    Type: AWS::AutoScaling::AutoScalingGroup
+#    Properties:
+#      LaunchTemplate:
+#        LaunchTemplateId: !Ref LaunchTemplate
+#        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+#      MaxSize: '1'
+#      MinSize: '1'
+#      Tags:
+#        - Key: Stage
+#          Value: !Ref Stage
+#          PropagateAtLaunch: true
+#      VPCZoneIdentifier: !Ref PublicSubnetIdList
 
   ElasticIp:
     Type: AWS::EC2::EIP
