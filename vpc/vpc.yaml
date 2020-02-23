@@ -22,6 +22,10 @@ Parameters:
 
 Resources:
 
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+
   PrivateNetworkAcl:
     Type: AWS::EC2::NetworkAcl
     Properties:
@@ -121,6 +125,15 @@ Resources:
       SubnetId: !Ref PublicSubnetA
       RouteTableId: !Ref PublicSubnetARouteTable
 
+  PublicSubnetARouteTableInternetRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicSubnetARouteTable
+    DependsOn:
+      - VpcGatewayAttachment
+
   Vpc:
     Type: AWS::EC2::VPC
     Properties:
@@ -128,6 +141,12 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${Name}-${Region}-${Stage}-vpc
+
+  VpcGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
 
 Outputs:
 
