@@ -37,7 +37,7 @@ Parameters:
 Conditions:
 
   HasBastion: !Not [ !Equals [ !Ref BastionAmiId, none ] ]
-  HasDomain: !Equals [ !Ref Domain, none ]
+  HasDomain: !Not [ !Equals [ !Ref Domain, none ] ]
 
 Resources:
 
