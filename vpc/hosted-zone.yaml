@@ -12,8 +12,8 @@ Parameters:
 
 Conditions:
 
-  IsPrivate: !Equals [ !Ref VpcId, none ]
-  IsPublic: !Not [ !Equals [ !Ref VpcId, none ] ]
+  IsPrivate: !Not [ !Equals [ !Ref VpcId, none ] ]
+  IsPublic: !Equals [ !Ref VpcId, none ]
 
 Resources:
 
