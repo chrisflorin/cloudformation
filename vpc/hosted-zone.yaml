@@ -7,13 +7,19 @@ Parameters:
     Type: String
 
   VpcId:
-    Default: !Ref 'AWS::NoValue'
+    Default: none
     Type: AWS::EC2::VPC::Id
+
+Conditions:
+
+  IsPrivate: !Equals [ !Ref VpcId, none ]
+  IsPublic: !Not [ !Equals [ !Ref VpcId, none ] ]
 
 Resources:
 
-  HostedZone:
+  PrivateHostedZone:
     Type: 'AWS::Route53::HostedZone'
+    Condition: IsPrivate
     Properties:
       HostedZoneConfig:
         Comment: !Sub ${Domain}
@@ -21,3 +27,11 @@ Resources:
       VPCs:
       - VPCId: !Ref VpcId
         VPCRegion: !Ref 'AWS::Region'
+
+  PublicHostedZone:
+    Type: 'AWS::Route53::HostedZone'
+    Condition: IsPublic
+    Properties:
+      HostedZoneConfig:
+        Comment: !Sub ${Domain}
+      Name: !Ref Domain
