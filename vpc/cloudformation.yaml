@@ -53,13 +53,21 @@ Resources:
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/vpc/bastion.yaml
 
+  PrivateHostedZone:
+    Type: AWS::CloudFormation::Stack
+    Condition: HasDomain
+    Properties:
+      Parameters:
+        Domain: !Sub internal.{Domain}
+        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
+      TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
+
   PublicHostedZone:
     Type: AWS::CloudFormation::Stack
     Condition: HasDomain
     Properties:
       Parameters:
         Domain: !Ref Domain
-#        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
 
   VpcSubStack:
