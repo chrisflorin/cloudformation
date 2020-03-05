@@ -58,7 +58,7 @@ Resources:
     Condition: HasDomain
     Properties:
       Parameters:
-        Domain: !Sub internal.{Domain}
+        Domain: !Sub internal.${Domain}
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
 
