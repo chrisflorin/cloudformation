@@ -15,6 +15,10 @@ Parameters:
   CidrClassB:
     Type: String
 
+  Domain:
+    Default: none
+    Type: String
+
   Name:
     Type: String
 
@@ -33,6 +37,7 @@ Parameters:
 Conditions:
 
   HasBastion: !Not [ !Equals [ !Ref BastionAmiId, none ] ]
+  HasDomain: !Equals [ !Ref Domain, none ]
 
 Resources:
 
@@ -46,7 +51,16 @@ Resources:
         PublicSubnetIdList: !GetAtt VpcSubStack.Outputs.PublicSubnetIdList
         Stage: !Ref Stage
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
-      TemplateURL: !Sub ${StackUrl}/bastion.yaml
+      TemplateURL: !Sub ${StackUrl}/vpc/bastion.yaml
+
+  PublicHostedZone:
+    Type: AWS::CloudFormation::Stack
+    Condition: HasDomain
+    Properties:
+      Parameters:
+        Domain: !Ref Domain
+#        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
+      TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack
@@ -56,6 +70,6 @@ Resources:
         Name: !Ref Name
         Region: !Ref Region
         Stage: !Ref Stage
-      TemplateURL: !Sub ${StackUrl}/vpc.yaml
+      TemplateURL: !Sub ${StackUrl}/vpc/vpc.yaml
 
 #Outputs:

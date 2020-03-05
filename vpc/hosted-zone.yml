@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+
+Parameters:
+
+  Domain:
+    Type: String
+
+  VpcId:
+    Default: 'AWS::NoValue'
+    Type: String
+
+Resources:
+
+  HostedZone:
+    Type: 'AWS::Route53::HostedZone'
+    Properties:
+      HostedZoneConfig:
+        Comment: !Sub "${Name} public DNS zone"
+      Name: !Ref Domain
+      VPCs:
+      - VPCId: !Ref VpcId
+        VPCRegion: !Ref 'AWS::Region'
