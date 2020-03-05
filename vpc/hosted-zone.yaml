@@ -16,7 +16,7 @@ Resources:
     Type: 'AWS::Route53::HostedZone'
     Properties:
       HostedZoneConfig:
-        Comment: !Sub "${Name} public DNS zone"
+        Comment: !Sub ${Domain}
       Name: !Ref Domain
       VPCs:
       - VPCId: !Ref VpcId
