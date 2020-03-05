@@ -8,7 +8,7 @@ Parameters:
 
   VpcId:
     Default: none
-    Type: AWS::EC2::VPC::Id
+    Type: String
 
 Conditions:
 
