@@ -34,6 +34,8 @@ Resources:
       DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
       DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
       DBSubnetGroupName: !Ref SubnetGroup
+      EnableCloudwatchLogsExports:
+        - slowquery
       Engine: aurora-mysql
       MasterUsername: root
       MasterUserPassword: test1234
