@@ -28,6 +28,7 @@ Resources:
       Parameters:
         ClusterName: !Ref ClusterName
         Stage: !Ref Stage
+        SubnetIds: !Ref SubnetIds
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-cluster.yaml
 
