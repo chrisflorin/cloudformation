@@ -14,7 +14,7 @@ Parameters:
     Type: String
 
   SubnetIds:
-    Type: String
+    Type: CommaDelimitedList
 
   VpcId:
     Type: String
