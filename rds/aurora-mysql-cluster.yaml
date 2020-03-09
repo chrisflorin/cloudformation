@@ -39,7 +39,7 @@ Resources:
       DBSubnetGroupName: !Ref SubnetGroup
       Engine: aurora-mysql
       MasterUsername: root
-      MasterUserPassword: test
+      MasterUserPassword: test1234
 
   SubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
