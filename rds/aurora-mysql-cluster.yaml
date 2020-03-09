@@ -20,6 +20,12 @@ Parameters:
 
 Resources:
 
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/rds/cluster/${RdsCluster}/slowquery
+      RetentionInDays: 3
+
   RdsClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
