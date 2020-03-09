@@ -26,6 +26,7 @@ Resources:
       Description: RdsClusterParameterGroup
       Family: aurora-mysql5.7
       Parameters:
+        slow_query_log: 1
 
   RdsCluster:
     Type: AWS::RDS::DBCluster
