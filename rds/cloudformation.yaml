@@ -6,6 +6,9 @@ Parameters:
   ClusterName:
     Type: String
 
+  StackUrl:
+    Type: String
+
   Stage:
     Type: String
 
