@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+
+Parameters:
+
+  ClusterName:
+    Type: String
+
+  Sequence:
+    Default: 1
+    Type: String
+
+  Stage:
+    Type: String
+
+  VpcId:
+    Type: String
+
+#Conditions:
+
+Resources:
+
+  RdsClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: RdsClusterParameterGroup
+      Family: aurora-mysql5.7
+      Parameters:
+
+  RdsCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
+      DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
+      Engine: aurora-mysql
+      MasterUsername: root
+      MasterUserPassword: test
+
+#Outputs:

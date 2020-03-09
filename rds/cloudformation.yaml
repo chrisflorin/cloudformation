@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+
+Parameters:
+
+  ClusterName:
+    Type: String
+
+  Stage:
+    Type: String
+
+  VpcId:
+    Type: String
+
+#Conditions:
+
+Resources:
+
+  RdsAuroraMysqlClusterSubStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        ClusterName: !Ref ClusterName
+        Stage: !Ref Stage
+        VpcId: !Ref VpcId
+      TemplateURL: !Sub ${StackUrl}/vpc/vpc.yaml
+
+#Outputs:
