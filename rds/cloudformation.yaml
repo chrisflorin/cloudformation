@@ -13,7 +13,7 @@ Parameters:
     Type: String
 
   SubnetIds:
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: CommaDelimitedList
 
   VpcId:
     Type: String
