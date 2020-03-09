@@ -12,6 +12,9 @@ Parameters:
   Stage:
     Type: String
 
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+
   VpcId:
     Type: String
 

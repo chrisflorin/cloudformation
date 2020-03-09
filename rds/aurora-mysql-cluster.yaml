@@ -13,6 +13,9 @@ Parameters:
   Stage:
     Type: String
 
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+
   VpcId:
     Type: String
 
@@ -33,8 +36,15 @@ Resources:
     Properties:
       DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
       DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
+      DBSubnetGroupName: !Ref SubnetGroup
       Engine: aurora-mysql
       MasterUsername: root
       MasterUserPassword: test
+
+  SubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: SubnetGroup
+      SubnetIds: !Ref SubnetIds
 
 #Outputs:
