@@ -16,9 +16,6 @@ Parameters:
   SubnetIds:
     Type: CommaDelimitedList
 
-  VpcId:
-    Type: String
-
 #Conditions:
 
 Resources:
