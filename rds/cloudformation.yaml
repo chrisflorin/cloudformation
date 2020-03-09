@@ -13,7 +13,7 @@ Parameters:
     Type: String
 
   SubnetIds:
-    Type: CommaDelimitedList
+    Type: String
 
   VpcId:
     Type: String
