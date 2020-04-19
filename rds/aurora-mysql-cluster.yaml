@@ -6,6 +6,10 @@ Parameters:
   ClusterName:
     Type: String
 
+  DeletionProtection:
+    Default: true
+    Type: String
+
   Sequence:
     Default: 1
     Type: String
@@ -43,6 +47,7 @@ Resources:
       DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
       DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
       DBSubnetGroupName: !Ref SubnetGroup
+      DeletionProtection: !Ref DeletionProtection
       EnableCloudwatchLogsExports:
         - slowquery
       Engine: aurora-mysql

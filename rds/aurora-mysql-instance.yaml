@@ -6,11 +6,19 @@ Parameters:
   ClusterName:
     Type: String
 
+  DatabaseName:
+    Default: none
+    Type: String
+
   DBClusterIdentifier:
     Default: none
     Type: String
 
   InstanceClass:
+    Type: String
+
+  Region:
+    Default: us-east-1
     Type: String
 
   SecurityGroup:
@@ -26,18 +34,23 @@ Parameters:
 Conditions:
 
   HasCluster: !Not [ !Equals [ !Ref DBClusterIdentifier, none ] ]
+  HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
 
 Resources:
 
   DatabaseInstance:
     Type: AWS::RDS::DBInstance
     Properties:
+      AvailabilityZone: !Sub ${Region}-1a
       DBClusterIdentifier: !If [ HasCluster, !Ref DBClusterIdentifier, 'AWS::NoValue' ]
       DBInstanceClass: !Ref InstanceClass
-      DBInstanceIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
+      DBInstanceIdentifier: !Sub ${ClusterName}-${Stage}-aurora-instance-${Sequence}
+      DBName: !If [ HasDatabaseName, !Ref DatabaseName, AWS::NoValue ]
       DBParameterGroupName: !Ref ParameterGroup
       DBSecurityGroups:
         - !Ref SecurityGroup
+      MasterUsername: root
+      MasterUserPassword: test1234
 
   ParameterGroup:
     Type: AWS::RDS::DBParameterGroup
