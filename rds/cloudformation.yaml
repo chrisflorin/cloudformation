@@ -22,6 +22,9 @@ Parameters:
   SubnetIds:
     Type: String
 
+  VpcCidr:
+    Type: String
+
 #Conditions:
 
 Resources:
@@ -33,6 +36,7 @@ Resources:
         ClusterName: !Ref ClusterName
         Stage: !Ref Stage
         SubnetIds: !Ref SubnetIds
+        VpcCidr: !Ref VpcCidr
       TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-cluster.yaml
 
   RdsAuroraMySqlInstance1:
