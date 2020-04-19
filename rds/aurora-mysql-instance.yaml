@@ -45,7 +45,7 @@ Resources:
       DBClusterIdentifier: !If [ HasCluster, !Ref DBClusterIdentifier, 'AWS::NoValue' ]
       DBInstanceClass: !Ref InstanceClass
       DBInstanceIdentifier: !Sub ${ClusterName}-${Stage}-aurora-instance-${Sequence}
-      DBName: !If [ HasDatabaseName, !Ref DatabaseName, AWS::NoValue ]
+      DBName: !If [ HasDatabaseName, !Ref DatabaseName, 'AWS::NoValue' ]
       DBParameterGroupName: !Ref ParameterGroup
       DBSecurityGroups:
         - !Ref SecurityGroup
