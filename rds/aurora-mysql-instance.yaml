@@ -43,7 +43,7 @@ Resources:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: DBParameterGroup
-      Family: MySQL5.7
+      Family: aurora-mysql5.7
       Parameters:
         slow_query_log: 1
 
