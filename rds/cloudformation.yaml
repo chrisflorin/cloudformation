@@ -10,9 +10,6 @@ Parameters:
     Default: db.t3.small
     Type: String
 
-  SecurityGroup:
-    Type: String
-
   StackUrl:
     Type: String
 
@@ -46,7 +43,7 @@ Resources:
         DBClusterIdentifier: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.DBClusterIdentifier
         InstanceClass: !Ref InstanceClass
         Name: 1
-        SecurityGroup: !Ref SecurityGroup
+        SecurityGroup: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.SecurityGroup
         Sequence: 1
         Stage: !Ref Stage
       TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-instance.yaml
