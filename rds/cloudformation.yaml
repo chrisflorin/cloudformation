@@ -40,9 +40,9 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
+        ClusterName: !Ref ClusterName
         DBClusterIdentifier: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.DBClusterIdentifier
         InstanceClass: !Ref InstanceClass
-        Name: 1
         SecurityGroup: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.SecurityGroup
         Sequence: 1
         Stage: !Ref Stage
