@@ -6,6 +6,13 @@ Parameters:
   ClusterName:
     Type: String
 
+  InstanceClass:
+    Default: db.t3.small
+    Type: String
+
+  SecurityGroup:
+    Type: String
+
   StackUrl:
     Type: String
 
@@ -19,7 +26,7 @@ Parameters:
 
 Resources:
 
-  RdsAuroraMysqlClusterSubStack:
+  RdsAuroraMySqlClusterSubStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
@@ -27,5 +34,17 @@ Resources:
         Stage: !Ref Stage
         SubnetIds: !Ref SubnetIds
       TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-cluster.yaml
+
+  RdsAuroraMySqlInstance1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        DBClusterIdentifier: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.DBClusterIdentifier
+        InstanceClass: !Ref InstanceClass
+        Name: 1
+        SecurityGroup: !Ref SecurityGroup
+        Sequence: 1
+        Stage: !Ref Stage
+      TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-instance.yaml
 
 #Outputs:

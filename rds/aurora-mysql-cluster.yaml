@@ -16,6 +16,9 @@ Parameters:
   SubnetIds:
     Type: CommaDelimitedList
 
+  VpcCidr:
+    Type: String
+
 #Conditions:
 
 Resources:
@@ -46,10 +49,23 @@ Resources:
       MasterUsername: root
       MasterUserPassword: test1234
 
+  SecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      DBSecurityGroupIngress:
+        - CIDRIP: !Ref VpcCidr
+      GroupDescription: SecurityGroup
+
   SubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: SubnetGroup
       SubnetIds: !Ref SubnetIds
 
-#Outputs:
+Outputs:
+
+  DBClusterIdentifier:
+    Value: !Ref RdsCluster
+
+  SecurityGroup:
+    Value: !Ref SecurityGroup

@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+
+Parameters:
+
+  DBClusterIdentifier:
+    Default: none
+    Type: String
+
+  InstanceClass:
+    Type: String
+
+  Name:
+    Type: String
+
+  SecurityGroup:
+    Type: String
+
+  Sequence:
+    Default: 1
+    Type: String
+
+  Stage:
+    Type: String
+
+Conditions:
+
+  HasCluster: !Not [ !Equals [ !Ref DBClusterIdentifier, none ] ]
+
+Resources:
+
+  DatabaseInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBClusterIdentifier: !If [ HasCluster, !Ref DBClusterIdentifier, 'AWS::NoValue' ]
+      DBInstanceClass: !Ref InstanceClass
+      DBInstanceIdentifier: !Sub ${Name}-${Stage}-aurora-cluster-${Sequence}
+      DBParameterGroupName: !Ref ParameterGroup
+      DBSecurityGroups:
+        - !Ref SecurityGroup
+
+  ParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: DBParameterGroup
+      Family: MySQL5.7
+      Parameters:
+        slow_query_log: 1
+
+#Outputs:
