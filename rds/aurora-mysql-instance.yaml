@@ -38,6 +38,7 @@ Resources:
       DBInstanceClass: !Ref InstanceClass
       DBInstanceIdentifier: !Sub ${ClusterName}-${Stage}-aurora-instance-${Sequence}
       DBParameterGroupName: !Ref ParameterGroup
+      Engine: aurora-mysql
 
   ParameterGroup:
     Type: AWS::RDS::DBParameterGroup
