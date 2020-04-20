@@ -6,6 +6,10 @@ Parameters:
   ClusterName:
     Type: String
 
+  DatabaseName:
+    Default: none
+    Type: String
+
   DeletionProtection:
     Default: false
     Type: String
@@ -26,7 +30,9 @@ Parameters:
   VpcId:
     Type: String
 
-#Conditions:
+Conditions:
+
+  HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
 
 Resources:
 
@@ -47,6 +53,7 @@ Resources:
   RdsCluster:
     Type: AWS::RDS::DBCluster
     Properties:
+      DatabaseName: !If [ HasDatabaseName, !Ref DatabaseName, 'AWS::NoValue' ]
       DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
       DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
       DBSubnetGroupName: !Ref SubnetGroup

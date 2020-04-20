@@ -6,10 +6,6 @@ Parameters:
   ClusterName:
     Type: String
 
-  DatabaseName:
-    Default: none
-    Type: String
-
   DBClusterIdentifier:
     Default: none
     Type: String
@@ -31,30 +27,17 @@ Parameters:
   Stage:
     Type: String
 
-Conditions:
-
-  HasCluster: !Not [ !Equals [ !Ref DBClusterIdentifier, none ] ]
-  HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
+#Conditions:
 
 Resources:
 
   DatabaseInstance:
     Type: AWS::RDS::DBInstance
     Properties:
-      AvailabilityZone: !Sub ${Region}-1a
-      DBClusterIdentifier: !If [ HasCluster, !Ref DBClusterIdentifier, 'AWS::NoValue' ]
+      DBClusterIdentifier: !Ref DBClusterIdentifier
       DBInstanceClass: !Ref InstanceClass
       DBInstanceIdentifier: !Sub ${ClusterName}-${Stage}-aurora-instance-${Sequence}
-      DBName: !If [ HasDatabaseName, !Ref DatabaseName, 'AWS::NoValue' ]
       DBParameterGroupName: !Ref ParameterGroup
-      DBSecurityGroups:
-        - !Ref SecurityGroup
-      Engine: aurora-mysql
-      EngineVersion: 5.7.mysql_aurora.2.07.1
-      MasterUsername: root
-      MasterUserPassword: test1234
-      VPCSecurityGroups:
-        - SecurityGroup
 
   ParameterGroup:
     Type: AWS::RDS::DBParameterGroup
