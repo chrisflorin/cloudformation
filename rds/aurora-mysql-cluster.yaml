@@ -23,6 +23,9 @@ Parameters:
   VpcCidr:
     Type: String
 
+  VpcId:
+    Type: String
+
 #Conditions:
 
 Resources:
@@ -58,11 +61,15 @@ Resources:
         - !Ref SecurityGroup
 
   SecurityGroup:
-    Type: AWS::RDS::DBSecurityGroup
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      DBSecurityGroupIngress:
-        - CIDRIP: !Ref VpcCidr
       GroupDescription: SecurityGroup
+      SecurityGroupIngress:
+        - CidrIp: !Ref VpcCidr
+          FromPort: 3306
+          ToPort: 3306
+          IpProtocol: tcp
+      VpcId: !Ref VpcId
 
   SubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
