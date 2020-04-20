@@ -49,6 +49,8 @@ Resources:
       DBParameterGroupName: !Ref ParameterGroup
       DBSecurityGroups:
         - !Ref SecurityGroup
+      Engine: aurora-mysql
+      EngineVersion: 5.7.mysql_aurora.2.07.1
       MasterUsername: root
       MasterUserPassword: test1234
 
