@@ -52,4 +52,7 @@ Resources:
         Stage: !Ref Stage
       TemplateURL: !Sub ${StackUrl}/rds/aurora-mysql-instance.yaml
 
-#Outputs:
+Outputs:
+
+  DBClusterIdentifier:
+    Value: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.DBClusterIdentifier
