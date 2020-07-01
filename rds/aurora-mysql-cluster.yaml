@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+
+Parameters:
+
+  ClusterName:
+    Type: String
+
+  DatabaseName:
+    Default: none
+    Type: String
+
+  DeletionProtection:
+    Default: false
+    Type: String
+
+  Sequence:
+    Default: 1
+    Type: String
+
+  Stage:
+    Type: String
+
+  SubnetIds:
+    Type: CommaDelimitedList
+
+  VpcCidr:
+    Type: String
+
+  VpcId:
+    Type: String
+
+Conditions:
+
+  HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
+
+Resources:
+
+  CloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/rds/cluster/${RdsCluster}/slowquery
+      RetentionInDays: 3
+
+  RdsClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: RdsClusterParameterGroup
+      Family: aurora-mysql5.7
+      Parameters:
+        slow_query_log: 1
+
+  RdsCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      DatabaseName: !If [ HasDatabaseName, !Ref DatabaseName, !Ref 'AWS::NoValue' ]
+      DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
+      DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
+      DBSubnetGroupName: !Ref SubnetGroup
+      DeletionProtection: !Ref DeletionProtection
+      EnableCloudwatchLogsExports:
+        - slowquery
+      Engine: aurora-mysql
+      EngineVersion: 5.7.mysql_aurora.2.07.1
+      MasterUsername: root
+      MasterUserPassword: test1234
+      VpcSecurityGroupIds:
+        - !Ref SecurityGroup
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SecurityGroup
+      SecurityGroupIngress:
+        - CidrIp: !Ref VpcCidr
+          FromPort: 3306
+          ToPort: 3306
+          IpProtocol: tcp
+      VpcId: !Ref VpcId
+
+  SubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: SubnetGroup
+      SubnetIds: !Ref SubnetIds
+
+Outputs:
+
+  DBClusterIdentifier:
+    Value: !Ref RdsCluster
+
+  SecurityGroup:
+    Value: !Ref SecurityGroup
