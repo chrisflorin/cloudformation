@@ -10,19 +10,7 @@ Parameters:
   ApplicationName:
     Type: String
 
-  CreateHttpSecurityGroup:
-    Default: false
-    Type: String
-
-  CreateHttpsSecurityGroup:
-    Default: false
-    Type: String
-
   CreateLoadBalancer:
-    Default: false
-    Type: String
-
-  CreateSshSecurityGroup:
     Default: false
     Type: String
 
@@ -41,6 +29,10 @@ Parameters:
     Default: ''
     Type: CommaDelimitedList
 
+  Port:
+    Default: 80
+    Type: String
+
   PrivateSubnetIdList:
     Type: CommaDelimitedList
 
@@ -57,10 +49,7 @@ Parameters:
 
 Conditions:
 
-  CreateHttpSecurityGroup: !Equals [ !Ref CreateHttpSecurityGroup, true ]
-  CreateHttpsSecurityGroup: !Equals [ !Ref CreateHttpsSecurityGroup, true ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Not [ !Equals [ !Ref LoadBalancerId, none ] ] ]
-  CreateSshSecurityGroup: !Equals [ !Ref CreateSshSecurityGroup, true ]
 
 Resources:
 
@@ -74,9 +63,7 @@ Resources:
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         SecurityGroupIds:
-          - !If [ CreateHttpSecurityGroup, !Ref HttpSecurityGroup, !Ref 'AWS::NoValue']
-          - !If [ CreateHttpsSecurityGroup, !Ref HttpsSecurityGroup, !Ref 'AWS::NoValue']
-          - !If [ CreateSshSecurityGroup, !Ref SshSecurityGroup, !Ref 'AWS::NoValue']
+          - !Ref SecurityGroup
 
 #2) Auto Scaling Group
   AutoScalingGroup:
@@ -104,50 +91,27 @@ Resources:
       Subnets: !Ref LoadBalancerSubnetIdList
       Type: application
 
-#4) Load Balancer Listener
+#4) Target Group
 
-#5) Internal/External Dns Entries; Ipv4 and Ipv6
+#5) Load Balancer Listener
 
-#6) EFS Shared Filesystem and Backup Plan
+#6) Internal/External Dns Entries; Ipv4 and Ipv6
 
-#7) Security Groups; Web, Ssh
-  HttpSecurityGroup:
-    Condition: CreateHttpSecurityGroup
+#7) EFS Shared Filesystem and Backup Plan
+
+#8) Security Group: Web
+  SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-http-security-group
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
+          FromPort: !Ref Port
+          ToPort: !Ref Port
           CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
-  HttpsSecurityGroup:
-    Condition: CreateHttpsSecurityGroup
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-https-security-group
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: !Ref VpcCidr
-      VpcId: !Ref VpcId
-
-  SshSecurityGroup:
-    Condition: CreateSshSecurityGroup
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: !Ref VpcCidr
-      VpcId: !Ref VpcId
-
-#8) Instance Profile/Iam Role
+#9) Instance Profile/Iam Role
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -175,4 +139,4 @@ Resources:
                 Resource:
                   - '*'
 
-#9) Ssh Access Policy
+#10) Ssh Access Policy and Security Group
