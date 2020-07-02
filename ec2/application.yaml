@@ -110,7 +110,7 @@ Resources:
       HealthCheckPath: !Ref HealthCheckPath
       HealthCheckPort: !Ref Port
       HealthCheckProtocol: !Ref Protocol
-      HealthCheckTimeoutSeconds: 30
+      HealthCheckTimeoutSeconds: 10
       HealthyThresholdCount: 2
       Matcher:
         HttpCode: 200
