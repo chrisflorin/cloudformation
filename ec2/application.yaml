@@ -111,13 +111,13 @@ Resources:
       HealthCheckPort: !Ref Port
       HealthCheckProtocol: !Ref Protocol
       HealthCheckTimeoutSeconds: 30
-      HealthyThresholdCount: 1
+      HealthyThresholdCount: 2
       Matcher:
         HttpCode: 200
       Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-tg
       Port: !Ref Port
       Protocol: !Ref Protocol
-      UnhealthyThresholdCount: 1
+      UnhealthyThresholdCount: 2
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
