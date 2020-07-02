@@ -38,6 +38,7 @@ Parameters:
     Type: String
 
   LoadBalancerSubnetIdList:
+    Default: ''
     Type: CommaDelimitedList
 
   PrivateSubnetIdList:
