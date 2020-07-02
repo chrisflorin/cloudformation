@@ -98,7 +98,7 @@ Resources:
     Condition: CreateLoadBalancer
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      IpAddressType: dualstack
+      IpAddressType: ipv4
       Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Ref LoadBalancerSubnetIdList
