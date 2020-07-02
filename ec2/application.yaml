@@ -44,6 +44,10 @@ Parameters:
   PrivateSubnetIdList:
     Type: CommaDelimitedList
 
+  SslPolicy:
+    Default: ELBSecurityPolicy-FS-1-2-Res-2019-08
+    Type: String
+
   Stage:
     Type: String
 
@@ -121,6 +125,18 @@ Resources:
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+#      Certificates:
+#        - Certificate
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+      SslPolicy: !Ref SslPolicy
 
 #6) Internal/External Dns Entries; Ipv4 and Ipv6
 
