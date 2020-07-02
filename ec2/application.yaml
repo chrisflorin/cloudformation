@@ -99,7 +99,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: dualstack
-      Name: !Sub ${ApplicationName}-${Region}-${Stage}-app-load-balancer
+      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-load-balancer
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Ref LoadBalancerSubnetIdList
       Type: application
