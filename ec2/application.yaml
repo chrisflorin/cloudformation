@@ -25,13 +25,13 @@ Parameters:
   InstanceType:
     Type: String
 
-  Stage:
-    Type: String
-
   PublicSubnetIdList:
     Type: CommaDelimitedList
 
-  VpcCidrBlock:
+  Stage:
+    Type: String
+
+  VpcCidr:
     Type: String
 
   VpcId:
@@ -94,7 +94,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: !Ref VpcCidrBlock
+          CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
   HttpsSecurityGroup:
@@ -106,7 +106,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
-          CidrIp: !Ref VpcCidrBlock
+          CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
   SshSecurityGroup:
@@ -118,7 +118,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: !Ref VpcCidrBlock
+          CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
 #8) Instance Profile/Iam Role
