@@ -14,6 +14,10 @@ Parameters:
     Default: false
     Type: String
 
+  HealthCheckPath:
+    Default: '/api/health-check'
+    Type: String
+
   InstanceType:
     Type: String
 
@@ -31,6 +35,10 @@ Parameters:
 
   Port:
     Default: 80
+    Type: String
+
+  Protocol:
+    Default: HTTP
     Type: String
 
   PrivateSubnetIdList:
@@ -78,6 +86,8 @@ Resources:
         - Key: Stage
           Value: !Ref Stage
           PropagateAtLaunch: true
+      TargetGroupARNs:
+        - !Ref TargetGroup
       VPCZoneIdentifier: !Ref PrivateSubnetIdList
 
 #3) Load Balancer
@@ -92,6 +102,23 @@ Resources:
       Type: application
 
 #4) Target Group
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: !Ref HealthCheckPath
+      HealthCheckPort: !Ref Port
+      HealthCheckProtocol: !Ref Protocol
+      HealthCheckTimeoutSeconds: 30
+      HealthyThresholdCount: 1
+      Matcher:
+        - HttpCode: 200
+      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-target-group
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+      UnhealthyThresholdCount: 1
+      VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
 
