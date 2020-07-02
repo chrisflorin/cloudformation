@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+#Metadata:
+
+Parameters:
+
+  AmiId:
+    Type: AWS::EC2::Image::Id
+
+  ApplicationName:
+    Type: String
+
+  CreateHttpSecurityGroup:
+    Default: false
+    Type: String
+
+  CreateHttpsSecurityGroup:
+    Default: false
+    Type: String
+
+  CreateSshSecurityGroup:
+    Default: false
+    Type: String
+
+  InstanceType:
+    Type: String
+
+  Stage:
+    Type: String
+
+  PublicSubnetIdList:
+    Type: CommaDelimitedList
+
+  VpcCidrBlock:
+    Type: String
+
+  VpcId:
+    Type: String
+
+#Mappings:
+
+Conditions:
+
+  CreateHttpSecurityGroup: !Equals [ !Ref CreateHttpSecurityGroup, true ]
+  CreateHttpsSecurityGroup: !Equals [ !Ref CreateHttpsSecurityGroup, true ]
+  CreateSshSecurityGroup: !Equals [ !Ref CreateSshSecurityGroup, true ]
+
+Resources:
+
+#1) Launch Template
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        IamInstanceProfile:
+          Arn: !GetAtt IamInstanceProfile.Arn
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        SecurityGroupIds:
+          - !If [ CreateHttpSecurityGroup, !Ref HttpSecurityGroup, !Ref 'AWS::NoValue']
+          - !If [ CreateHttpsSecurityGroup, !Ref HttpsSecurityGroup, !Ref 'AWS::NoValue']
+          - !If [ CreateSshSecurityGroup, !Ref SshSecurityGroup, !Ref 'AWS::NoValue']
+
+#2) Auto Scaling Group
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '1'
+      MinSize: '1'
+      Tags:
+        - Key: Stage
+          Value: !Ref Stage
+          PropagateAtLaunch: true
+      VPCZoneIdentifier: !Ref PublicSubnetIdList
+
+#3) Load Balancer
+
+#4) Load Balancer Listener
+
+#5) Internal/External Dns Entries; Ipv4 and Ipv6
+
+#6) EFS Shared Filesystem and Backup Plan
+
+#7) Security Groups; Web, Ssh
+  HttpSecurityGroup:
+    Condition: CreateHttpSecurityGroup
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-http-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref VpcCidrBlock
+      VpcId: !Ref VpcId
+
+  HttpsSecurityGroup:
+    Condition: CreateHttpsSecurityGroup
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-https-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref VpcCidrBlock
+      VpcId: !Ref VpcId
+
+  SshSecurityGroup:
+    Condition: CreateSshSecurityGroup
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref VpcCidrBlock
+      VpcId: !Ref VpcId
+
+#8) Instance Profile/Iam Role
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref IamRole
+
+  IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-associate-address-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:AssociateAddress
+                Resource:
+                  - '*'
+
+#9) Ssh Access Policy
