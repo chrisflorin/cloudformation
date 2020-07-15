@@ -156,7 +156,7 @@ Resources:
   LoadBalancerHttpsListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-     Certificates:
+      Certificates:
        - CertificateArn: !Ref Certificate
       DefaultActions:
         - TargetGroupArn: !Ref TargetGroup
