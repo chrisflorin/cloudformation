@@ -70,7 +70,7 @@ Parameters:
 Conditions:
 
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
-  CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Not [ !Equals [ !Ref LoadBalancerId, none ] ] ]
+  CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerId, none ] ]
 
 Resources:
 
