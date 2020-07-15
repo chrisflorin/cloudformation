@@ -204,8 +204,6 @@ Resources:
       DeploymentConfigName: CodeDeployDefault.OneAtATime
       DeploymentGroupName: !Sub ${Stage}-${Sequence}
       LoadBalancerInfo:
-        ElbInfoList:
-          - Name: !GetAtt LoadBalancer.LoadBalancerName
         TargetGroupInfoList:
           - Name: !GetAtt TargetGroup.TargetGroupName
       ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
