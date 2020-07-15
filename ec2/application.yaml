@@ -10,6 +10,10 @@ Parameters:
   ApplicationName:
     Type: String
 
+  CodeDeployApplication:
+    Default: none
+    Type: String
+
   CreateLoadBalancer:
     Default: false
     Type: String
@@ -44,6 +48,10 @@ Parameters:
   PrivateSubnetIdList:
     Type: CommaDelimitedList
 
+  Sequence:
+    Default: 1
+    Type: String
+
 #  SslPolicy:
 #    Default: ELBSecurityPolicy-FS-1-2-Res-2019-08
 #    Type: String
@@ -61,6 +69,7 @@ Parameters:
 
 Conditions:
 
+  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Not [ !Equals [ !Ref LoadBalancerId, none ] ] ]
 
 Resources:
@@ -183,3 +192,24 @@ Resources:
                   - '*'
 
 #10) Ssh Access Policy and Security Group
+
+#11) CodeDeploy Group
+  CodeDeployGroup:
+    Condition: CreateCodeDeployGroup
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties:
+      ApplicationName: !Ref CodeDeployApplication
+      AutoRollbackConfiguration:
+        AutoRollbackConfiguration
+      AutoScalingGroups:
+        - !Ref AutoScalingGroup
+      Deployment:
+        Deployment
+      DeploymentConfigName: CodeDeployDefault.OneAtATime
+      DeploymentGroupName: !Sub ${Stage}-${Sequence}
+      LoadBalancerInfo:
+        ElbInfoList:
+          - Name: !GetAtt LoadBalancer.LoadBalancerName
+        TargetGroupInfoList:
+          - Name: !GetAtt TargetGroup.TargetGroupName
+      ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole
