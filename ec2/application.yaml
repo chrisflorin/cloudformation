@@ -134,18 +134,20 @@ Resources:
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
-#  LoadBalancerListener:
-#    Type: AWS::ElasticLoadBalancingV2::Listener
-#    Properties:
-##      Certificates:
-##        - Certificate
-#      DefaultActions:
-#        - TargetGroupArn: !Ref TargetGroup
-#          Type: forward
-#      LoadBalancerArn: !Ref LoadBalancer
-#      Port: !Ref Port
-#      Protocol: !Ref Protocol
-##      SslPolicy: !Ref SslPolicy
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+#      Certificates:
+#        - Certificate
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+#      SslPolicy: !Ref SslPolicy
+    DependsOn:
+      - LoadBalancer
 
 #6) Internal/External Dns Entries; Ipv4 and Ipv6
 
