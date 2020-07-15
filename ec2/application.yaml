@@ -1,0 +1,236 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+#Metadata:
+
+Parameters:
+
+  AmiId:
+    Type: AWS::EC2::Image::Id
+
+  ApplicationName:
+    Type: String
+
+  Certificate:
+    Type: String
+
+  CodeDeployApplication:
+    Default: none
+    Type: String
+
+  CreateLoadBalancer:
+    Default: false
+    Type: String
+
+  HealthCheckPath:
+    Default: '/api/health-check'
+    Type: String
+
+  InstanceType:
+    Type: String
+
+  LoadBalancerId:
+    Default: none
+    Type: String
+
+  LoadBalancerScheme:
+    Default: internal
+    Type: String
+
+  LoadBalancerSubnetIdList:
+    Default: ''
+    Type: CommaDelimitedList
+
+  Port:
+    Default: 80
+    Type: String
+
+  Protocol:
+    Default: HTTP
+    Type: String
+
+  PrivateSubnetIdList:
+    Type: CommaDelimitedList
+
+  Sequence:
+    Default: 1
+    Type: String
+
+#  SslPolicy:
+#    Default: ELBSecurityPolicy-FS-1-2-Res-2019-08
+#    Type: String
+
+  Stage:
+    Type: String
+
+  VpcCidr:
+    Type: String
+
+  VpcId:
+    Type: String
+
+#Mappings:
+
+Conditions:
+
+  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
+  CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerId, none ] ]
+
+Resources:
+
+#1) Launch Template
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        IamInstanceProfile:
+          Arn: !GetAtt IamInstanceProfile.Arn
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        SecurityGroupIds:
+          - !Ref SshSecurityGroup
+          - !Ref WebSecurityGroup
+
+#2) Auto Scaling Group
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '1'
+      MinSize: '1'
+      Tags:
+        - Key: Stage
+          Value: !Ref Stage
+          PropagateAtLaunch: true
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      VPCZoneIdentifier: !Ref PrivateSubnetIdList
+
+#3) Load Balancer
+  LoadBalancer:
+    Condition: CreateLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
+      Scheme: !Ref LoadBalancerScheme
+      Subnets: !Ref LoadBalancerSubnetIdList
+      Type: application
+
+#4) Target Group
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: !Ref HealthCheckPath
+      HealthCheckPort: !Ref Port
+      HealthCheckProtocol: !Ref Protocol
+      HealthCheckTimeoutSeconds: 10
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-tg
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VpcId
+
+#5) Load Balancer Listener
+  LoadBalancerHttpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - RedirectConfig:
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+            Port: 443
+          Type: redirect
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+#      SslPolicy: !Ref SslPolicy
+    DependsOn:
+      - LoadBalancer
+
+  LoadBalancerHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+       - CertificateArn: !Ref Certificate
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+#      SslPolicy: !Ref SslPolicy
+    DependsOn:
+      - LoadBalancer
+
+#6) Security Groups: Ssh and Web
+  SshSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref VpcCidr
+      VpcId: !Ref VpcId
+
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-web-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref Port
+          ToPort: !Ref Port
+          CidrIp: !Ref VpcCidr
+      VpcId: !Ref VpcId
+
+#7) Instance Profile/Iam Role
+  IamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref IamRole
+
+  IamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-associate-address-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:AssociateAddress
+                Resource:
+                  - '*'
+
+#9) CodeDeploy Group
+  CodeDeployGroup:
+    Condition: CreateCodeDeployGroup
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties:
+      ApplicationName: !Ref CodeDeployApplication
+      AutoScalingGroups:
+        - !Ref AutoScalingGroup
+      DeploymentConfigName: CodeDeployDefault.OneAtATime
+      DeploymentGroupName: !Sub ${Stage}-${Sequence}
+      LoadBalancerInfo:
+        TargetGroupInfoList:
+          - Name: !GetAtt TargetGroup.TargetGroupName
+      ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
