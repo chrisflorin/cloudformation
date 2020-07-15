@@ -199,12 +199,8 @@ Resources:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
       ApplicationName: !Ref CodeDeployApplication
-      AutoRollbackConfiguration:
-        AutoRollbackConfiguration
       AutoScalingGroups:
         - !Ref AutoScalingGroup
-      Deployment:
-        Deployment
       DeploymentConfigName: CodeDeployDefault.OneAtATime
       DeploymentGroupName: !Sub ${Stage}-${Sequence}
       LoadBalancerInfo:
