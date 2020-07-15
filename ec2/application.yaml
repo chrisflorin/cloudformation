@@ -87,7 +87,8 @@ Resources:
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         SecurityGroupIds:
-          - !Ref SecurityGroup
+          - !Ref SshSecurityGroup
+          - !Ref WebSecurityGroup
 
 #2) Auto Scaling Group
   AutoScalingGroup:
@@ -172,7 +173,7 @@ Resources:
   SshSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-security-group
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -183,7 +184,7 @@ Resources:
   WebSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-security-group
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-web-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref Port
