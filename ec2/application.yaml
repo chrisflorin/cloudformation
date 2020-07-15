@@ -168,12 +168,19 @@ Resources:
     DependsOn:
       - LoadBalancer
 
-#6) Internal/External Dns Entries; Ipv4 and Ipv6
+#6) Security Groups: Ssh and Web
+  SshSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref VpcCidr
+      VpcId: !Ref VpcId
 
-#7) EFS Shared Filesystem and Backup Plan
-
-#8) Security Group: Web
-  SecurityGroup:
+  WebSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-security-group
@@ -184,7 +191,7 @@ Resources:
           CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
-#9) Instance Profile/Iam Role
+#7) Instance Profile/Iam Role
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -212,9 +219,7 @@ Resources:
                 Resource:
                   - '*'
 
-#10) Ssh Access Policy and Security Group
-
-#11) CodeDeploy Group
+#9) CodeDeploy Group
   CodeDeployGroup:
     Condition: CreateCodeDeployGroup
     Type: AWS::CodeDeploy::DeploymentGroup
