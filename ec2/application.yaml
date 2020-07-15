@@ -212,4 +212,4 @@ Resources:
           - Name: !GetAtt LoadBalancer.LoadBalancerName
         TargetGroupInfoList:
           - Name: !GetAtt TargetGroup.TargetGroupName
-      ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole
+      ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
