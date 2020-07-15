@@ -10,6 +10,9 @@ Parameters:
   ApplicationName:
     Type: String
 
+  Certificate:
+    Type: String
+
   CodeDeployApplication:
     Default: none
     Type: String
@@ -134,17 +137,33 @@ Resources:
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
-  LoadBalancerListener:
+  LoadBalancerHttpListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-#      Certificates:
-#        - Certificate
+      DefaultActions:
+        - RedirectConfig:
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+            Port: 443
+          Type: redirect
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref Port
+      Protocol: !Ref Protocol
+#      SslPolicy: !Ref SslPolicy
+    DependsOn:
+      - LoadBalancer
+
+  LoadBalancerHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+     Certificates:
+       - CertificateArn: !Ref Certificate
       DefaultActions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
       LoadBalancerArn: !Ref LoadBalancer
-      Port: !Ref Port
-      Protocol: !Ref Protocol
+      Port: 443
+      Protocol: HTTPS
 #      SslPolicy: !Ref SslPolicy
     DependsOn:
       - LoadBalancer
