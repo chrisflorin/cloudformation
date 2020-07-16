@@ -93,8 +93,8 @@ Resources:
         NetworkInterfaces:
           - AssociatePublicIpAddress: true
             DeviceIndex: 0
-        SecurityGroupIds:
-          - !Ref SecurityGroup
+            Groups:
+              - !Ref SecurityGroup
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
