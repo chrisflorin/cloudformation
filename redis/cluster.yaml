@@ -1,0 +1,64 @@
+#AWSTemplateFormatVersion: 2010-09-09
+#Description: ---
+#Metadata:
+
+Parameters:
+
+  InstanceType:
+    Default: cache.t3.micro
+    Type: String
+
+  Sequence:
+    Default: 1
+    Type: String
+
+#Mappings:
+
+#Conditions:
+
+Resources:
+
+  CacheCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      AutoMinorVersionUpgrade: true
+      AZMode: cross-az
+      CacheNodeType: !Ref InstanceType
+      CacheParameterGroupName: !Ref ParameterGroup
+#      CacheSecurityGroupNames:
+#        - String
+      CacheSubnetGroupName: String
+      ClusterName: !Sub redis-cluster-${Sequence}
+      Engine: redis
+      EngineVersion: 5.0.6
+#      NotificationTopicArn: String
+      NumCacheNodes: 1
+#      Port: Integer
+#      PreferredAvailabilityZone: String
+      PreferredAvailabilityZones:
+        - us-east-1a
+        - us-east-2a
+#      PreferredMaintenanceWindow: String
+#      SnapshotArns:
+#        - String
+#      SnapshotName: String
+#      SnapshotRetentionLimit: Integer
+#      SnapshotWindow: String
+#      Tags:
+#        - Tag
+#      VpcSecurityGroupIds:
+#        - String
+
+  ParameterGroup:
+    Type: AWS::ElastiCache::ParameterGroup
+    Properties:
+      CacheParameterGroupFamily: redis5.0
+#      Properties:
+#        Key : Value
+
+Outputs:
+
+
+
+
+
