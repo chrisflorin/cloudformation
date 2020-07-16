@@ -86,10 +86,11 @@ Resources:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        AssociatePublicIpAddress: true
         IamInstanceProfile: !Ref IamInstanceProfile
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true
         SecurityGroupIds:
           - !Ref SecurityGroup
 
