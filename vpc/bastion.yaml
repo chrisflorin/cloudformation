@@ -92,6 +92,7 @@ Resources:
         InstanceType: !Ref InstanceType
         NetworkInterfaces:
           - AssociatePublicIpAddress: true
+            DeviceIndex: 0
         SecurityGroupIds:
           - !Ref SecurityGroup
 
