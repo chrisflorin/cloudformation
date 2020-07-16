@@ -108,12 +108,8 @@ Resources:
       GroupDescription: !Sub ${VpcId}-bastion-security-group
       SecurityGroupEgress:
         - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: !Ref VpcCidr
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
+          FromPort: 22
+          ToPort: 22
           CidrIp: !Ref VpcCidr
       SecurityGroupIngress:
         - IpProtocol: tcp
