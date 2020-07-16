@@ -31,8 +31,8 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate
         Version: !GetAtt LaunchTemplate.LatestVersionNumber
-      MaxSize: '1'
-      MinSize: '1'
+      MaxSize: 1
+      MinSize: 1
       Tags:
         - Key: Stage
           Value: !Ref Stage
@@ -64,6 +64,17 @@ Resources:
                   - ec2:AssociateAddress
                 Resource:
                   - '*'
+              - Effect: Allow
+                Action:
+                  - iam:ListUsers
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - iam:ListSSHPublicKeys
+                  - iam:GetSSHPublicKey
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/*'
 
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -75,8 +86,8 @@ Resources:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        IamInstanceProfile:
-          Arn: !GetAtt IamInstanceProfile.Arn
+        AssociatePublicIpAddress: true
+        IamInstanceProfile: !Ref IamInstanceProfile
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         SecurityGroupIds:
