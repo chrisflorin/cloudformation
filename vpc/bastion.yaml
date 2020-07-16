@@ -34,6 +34,9 @@ Resources:
       MaxSize: 1
       MinSize: 1
       Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}
+          PropagateAtLaunch: true
         - Key: Stage
           Value: !Ref Stage
           PropagateAtLaunch: true
