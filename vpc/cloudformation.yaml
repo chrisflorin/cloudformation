@@ -50,6 +50,7 @@ Resources:
         InstanceType: !Ref BastionInstanceType
         PublicSubnetIdList: !GetAtt VpcSubStack.Outputs.PublicSubnetIdList
         Stage: !Ref Stage
+        VpcCidr: !GetAtt VpcSubStack.Outputs.CidrBlock
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/vpc/bastion.yaml
 

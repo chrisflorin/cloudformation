@@ -16,6 +16,9 @@ Parameters:
   PublicSubnetIdList:
     Type: CommaDelimitedList
 
+  VpcCidr:
+    Type: String
+
   VpcId:
     Type: String
 
@@ -31,9 +34,12 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate
         Version: !GetAtt LaunchTemplate.LatestVersionNumber
-      MaxSize: '1'
-      MinSize: '1'
+      MaxSize: 1
+      MinSize: 1
       Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}
+          PropagateAtLaunch: true
         - Key: Stage
           Value: !Ref Stage
           PropagateAtLaunch: true
@@ -64,6 +70,19 @@ Resources:
                   - ec2:AssociateAddress
                 Resource:
                   - '*'
+              - Effect: Allow
+                Action:
+                  - iam:ListUsers
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - iam:ListSSHPublicKeys
+                  - iam:GetSSHPublicKey
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/*'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
 
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -79,13 +98,19 @@ Resources:
           Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
-        SecurityGroupIds:
-          - !Ref SecurityGroup
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true
+            DeviceIndex: 0
+            Groups:
+              - !Ref SecurityGroup
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub ${VpcId}-bastion-security-group
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: !Ref VpcCidr
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
