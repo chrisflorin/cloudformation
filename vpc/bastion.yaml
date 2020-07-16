@@ -81,6 +81,8 @@ Resources:
                   - iam:GetSSHPublicKey
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:user/*'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
 
   IamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
