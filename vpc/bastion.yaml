@@ -86,7 +86,8 @@ Resources:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        IamInstanceProfile: !Ref IamInstanceProfile
+        IamInstanceProfile:
+          Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         NetworkInterfaces:
