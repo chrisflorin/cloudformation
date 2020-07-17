@@ -15,6 +15,9 @@ Parameters:
     Default: 1
     Type: String
 
+  VpcId:
+    Type: String
+
 #Mappings:
 
 #Conditions:
@@ -61,9 +64,14 @@ Resources:
 #        Key : Value
 
   SecurityGroup:
-    Type: AWS::ElastiCache::SecurityGroup
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      Description: ElastiCacheSecurityGroup
+      GroupDescription: description
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
 
   SubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
