@@ -65,7 +65,7 @@ Resources:
     Properties:
       Description: ElastiCacheSecurityGroup
 
-  SubnetGrouop:
+  SubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
     Properties:
       CacheSubnetGroupName: redis-cluster-1-group-name
