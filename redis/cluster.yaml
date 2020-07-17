@@ -46,8 +46,8 @@ Resources:
 #      SnapshotWindow: String
 #      Tags:
 #        - Tag
-#      VpcSecurityGroupIds:
-#        - String
+      VpcSecurityGroupIds:
+        - !SecurityGroup
 
   ParameterGroup:
     Type: AWS::ElastiCache::ParameterGroup
@@ -56,5 +56,11 @@ Resources:
       Description: Required
 #      Properties:
 #        Key : Value
+
+
+  SecurityGroup:
+    Type: AWS::ElastiCache::SecurityGroup
+    Properties:
+      Description: ElastiCacheSecurityGroup
 
 #Outputs:
