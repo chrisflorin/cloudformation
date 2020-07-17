@@ -4,16 +4,22 @@
 
 Parameters:
 
+  ClusterName:
+    Type: String
+
   InstanceType:
     Default: cache.t3.micro
     Type: String
 
-  SubnetIds:
-    Type: CommaDelimitedList
-
   Sequence:
     Default: 1
     Type: String
+
+  Stage:
+    Type: String
+
+  SubnetIds:
+    Type: CommaDelimitedList
 
   VpcId:
     Type: String
@@ -34,7 +40,7 @@ Resources:
 #      CacheSecurityGroupNames:
 #        - String
       CacheSubnetGroupName: !Ref SubnetGroup
-      ClusterName: !Sub redis-cluster-${Sequence}
+      ClusterName: !Sub ${ClusterName}-${Stage}-redis-cluster-${Sequence}
       Engine: redis
       EngineVersion: 5.0.6
 #      NotificationTopicArn: String
@@ -75,7 +81,7 @@ Resources:
   SubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
     Properties:
-      CacheSubnetGroupName: redis-cluster-1-group-name
+      CacheSubnetGroupName: !Sub ${ClusterName}-${Stage}-redis-cluster-${Sequence}-subnet-group
       Description: description
       SubnetIds: !Ref SubnetIds
 
