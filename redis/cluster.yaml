@@ -47,7 +47,7 @@ Resources:
 #      Tags:
 #        - Tag
       VpcSecurityGroupIds:
-        - !SecurityGroup
+        - !Ref SecurityGroup
 
   ParameterGroup:
     Type: AWS::ElastiCache::ParameterGroup
