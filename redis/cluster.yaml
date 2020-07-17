@@ -43,7 +43,6 @@ Resources:
 #      PreferredAvailabilityZone: String
       PreferredAvailabilityZones:
         - us-east-1a
-        - us-east-1b
 #      PreferredMaintenanceWindow: String
 #      SnapshotArns:
 #        - String
