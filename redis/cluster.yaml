@@ -38,7 +38,7 @@ Resources:
       Engine: redis
       EngineVersion: 5.0.6
 #      NotificationTopicArn: String
-      NumCacheNodes: 1
+      NumCacheNodes: 2
 #      Port: Integer
 #      PreferredAvailabilityZone: String
       PreferredAvailabilityZones:
