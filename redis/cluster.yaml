@@ -8,6 +8,9 @@ Parameters:
     Default: cache.t3.micro
     Type: String
 
+  SubnetIds:
+    Type: CommaDelimitedList
+
   Sequence:
     Default: 1
     Type: String
@@ -27,7 +30,7 @@ Resources:
       CacheParameterGroupName: !Ref ParameterGroup
 #      CacheSecurityGroupNames:
 #        - String
-      CacheSubnetGroupName: String
+      CacheSubnetGroupName: !Ref SubnetGroup
       ClusterName: !Sub redis-cluster-${Sequence}
       Engine: redis
       EngineVersion: 5.0.6
@@ -57,10 +60,17 @@ Resources:
 #      Properties:
 #        Key : Value
 
-
   SecurityGroup:
     Type: AWS::ElastiCache::SecurityGroup
     Properties:
       Description: ElastiCacheSecurityGroup
+
+  SubnetGrouop:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      CacheSubnetGroupName: redis-cluster-1-group-name
+      Description: description
+      SubnetIds: !Ref SubnetIds
+
 
 #Outputs:
