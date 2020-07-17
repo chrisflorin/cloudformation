@@ -53,6 +53,7 @@ Resources:
     Type: AWS::ElastiCache::ParameterGroup
     Properties:
       CacheParameterGroupFamily: redis5.0
+      Description: Required
 #      Properties:
 #        Key : Value
 
