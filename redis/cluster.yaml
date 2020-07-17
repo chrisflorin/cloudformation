@@ -38,12 +38,12 @@ Resources:
       Engine: redis
       EngineVersion: 5.0.6
 #      NotificationTopicArn: String
-      NumCacheNodes: 2
+      NumCacheNodes: 1
 #      Port: Integer
 #      PreferredAvailabilityZone: String
       PreferredAvailabilityZones:
         - us-east-1a
-        - us-east-2a
+        - us-east-1b
 #      PreferredMaintenanceWindow: String
 #      SnapshotArns:
 #        - String
@@ -81,4 +81,4 @@ Resources:
       SubnetIds: !Ref SubnetIds
 
 
-#Outputs:
+#Outputs
