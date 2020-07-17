@@ -28,7 +28,7 @@ Resources:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
       AutoMinorVersionUpgrade: true
-      AZMode: cross-az
+      AZMode: single-az
       CacheNodeType: !Ref InstanceType
       CacheParameterGroupName: !Ref ParameterGroup
 #      CacheSecurityGroupNames:
