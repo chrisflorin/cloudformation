@@ -152,8 +152,6 @@ Resources:
       Port: !Ref Port
       Protocol: !Ref Protocol
 #      SslPolicy: !Ref SslPolicy
-    DependsOn:
-      - LoadBalancer
 
   LoadBalancerHttpsListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
