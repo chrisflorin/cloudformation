@@ -11,6 +11,7 @@ Parameters:
     Type: String
 
   Certificate:
+    Default: none
     Type: String
 
   CodeDeployApplication:
@@ -28,7 +29,7 @@ Parameters:
   InstanceType:
     Type: String
 
-  LoadBalancerId:
+  LoadBalancerArn:
     Default: none
     Type: String
 
@@ -73,7 +74,7 @@ Parameters:
 Conditions:
 
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
-  CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerId, none ] ]
+  CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
 
 Resources:
 
@@ -147,7 +148,7 @@ Resources:
             StatusCode: HTTP_301
             Port: 443
           Type: redirect
-      LoadBalancerArn: !Ref LoadBalancer
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancerArn, !Ref LoadBalancer ]
       Port: !Ref Port
       Protocol: !Ref Protocol
 #      SslPolicy: !Ref SslPolicy
