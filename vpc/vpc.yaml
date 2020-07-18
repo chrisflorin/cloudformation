@@ -10,9 +10,6 @@ Parameters:
   Name:
     Type: String
 
-  Region:
-    Type: String
-
   Stage:
     Type: String
 
@@ -201,7 +198,7 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.0.0/16
       Tags:
         - Key: Name
-          Value: !Sub ${Name}-${Region}-${Stage}-vpc
+          Value: !Sub ${Name}-${AWS::Region}-${Stage}-vpc
 
   VpcGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
