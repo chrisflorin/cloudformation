@@ -74,6 +74,8 @@ Parameters:
 Conditions:
 
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
+  CreateHttpLoadBalancerListener: !Equals [ !Ref Certificate, none ]
+  CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
 
 Resources:
@@ -139,7 +141,34 @@ Resources:
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
-  LoadBalancerHttpListener:
+  LoadBalancerHttpsListener:
+    Condition: CreateHttpLoadBalancerListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 80
+      Protocol: HTTPS
+#      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsListener:
+    Condition: CreateHttpsLoadBalancerListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+       - CertificateArn: !Ref Certificate
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 443
+      Protocol: HTTPS
+#      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsRedirectListener:
+    Condition: CreateHttpsLoadBalancerListener
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
@@ -151,19 +180,6 @@ Resources:
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: !Ref Port
       Protocol: !Ref Protocol
-#      SslPolicy: !Ref SslPolicy
-
-  LoadBalancerHttpsListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      Certificates:
-       - CertificateArn: !Ref Certificate
-      DefaultActions:
-        - TargetGroupArn: !Ref TargetGroup
-          Type: forward
-      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
-      Port: 443
-      Protocol: HTTPS
 #      SslPolicy: !Ref SslPolicy
 
 #6) Security Groups: Ssh and Web
