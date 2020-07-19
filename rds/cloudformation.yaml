@@ -47,6 +47,7 @@ Resources:
         ClusterName: !Ref ClusterName
         DBClusterIdentifier: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.DBClusterIdentifier
         InstanceClass: !Ref InstanceClass
+        ParameterGroup: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.InstanceParameterGroup
         SecurityGroup: !GetAtt RdsAuroraMySqlClusterSubStack.Outputs.SecurityGroup
         Sequence: 1
         Stage: !Ref Stage

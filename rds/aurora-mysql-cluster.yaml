@@ -42,10 +42,18 @@ Resources:
       LogGroupName: !Sub /aws/rds/cluster/${RdsCluster}/slowquery
       RetentionInDays: 3
 
-  RdsClusterParameterGroup:
+  ClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: RdsClusterParameterGroup
+      Family: aurora-mysql5.7
+      Parameters:
+        slow_query_log: 1
+
+  InstanceParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: DBParameterGroup
       Family: aurora-mysql5.7
       Parameters:
         slow_query_log: 1
@@ -55,7 +63,7 @@ Resources:
     Properties:
       DatabaseName: !If [ HasDatabaseName, !Ref DatabaseName, !Ref 'AWS::NoValue' ]
       DBClusterIdentifier: !Sub ${ClusterName}-${Stage}-aurora-cluster-${Sequence}
-      DBClusterParameterGroupName: !Ref RdsClusterParameterGroup
+      DBClusterParameterGroupName: !Ref ClusterParameterGroup
       DBSubnetGroupName: !Ref SubnetGroup
       DeletionProtection: !Ref DeletionProtection
       EnableCloudwatchLogsExports:
@@ -88,6 +96,9 @@ Outputs:
 
   DBClusterIdentifier:
     Value: !Ref RdsCluster
+
+  InstanceParameterGroup:
+    Value: !Ref InstanceParameterGroup
 
   SecurityGroup:
     Value: !Ref SecurityGroup
