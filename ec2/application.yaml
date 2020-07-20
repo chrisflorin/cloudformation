@@ -39,7 +39,7 @@ Parameters:
 
   LoadBalancerSubnetIdList:
     Default: ''
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::Subnet::Id>
 
   Port:
     Default: 80
@@ -50,7 +50,7 @@ Parameters:
     Type: String
 
   PrivateSubnetIdList:
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::Subnet::Id>
 
   Sequence:
     Default: 1
@@ -67,7 +67,7 @@ Parameters:
     Type: String
 
   VpcId:
-    Type: String
+    Type: AWS::EC2::VPC::Id
 
 #Mappings:
 
