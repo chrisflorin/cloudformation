@@ -39,7 +39,7 @@ Parameters:
 
   LoadBalancerSubnetIdList:
     Default: ''
-    Type: List<AWS::EC2::Subnet::Id>
+    Type: String
 
   Port:
     Default: 80
