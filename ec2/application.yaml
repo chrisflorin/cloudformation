@@ -141,7 +141,7 @@ Resources:
       VpcId: !Ref VpcId
 
 #5) Load Balancer Listener
-  LoadBalancerHttpsListener:
+  LoadBalancerHttpListener:
     Condition: CreateHttpLoadBalancerListener
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -150,7 +150,7 @@ Resources:
           Type: forward
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: 80
-      Protocol: HTTPS
+      Protocol: HTTP
 #      SslPolicy: !Ref SslPolicy
 
   LoadBalancerHttpsListener:
@@ -178,8 +178,8 @@ Resources:
             Port: 443
           Type: redirect
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
-      Port: !Ref Port
-      Protocol: !Ref Protocol
+      Port: 80
+      Protocol: HTTP
 #      SslPolicy: !Ref SslPolicy
 
 #6) Security Groups: Ssh and Web
