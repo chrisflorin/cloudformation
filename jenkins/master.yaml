@@ -1,0 +1,66 @@
+#AWSTemplateFormatVersion: 2010-09-09
+#Description: ---
+#Metadata:
+
+Parameters:
+
+  AmiId:
+    Type: String
+
+  InstanceType:
+    Default: t3.micro
+    Type: String
+
+  LoadBalancerArn:
+    Default: none
+    Type: String
+
+  PrivateSubnetIdList:
+    Type: String
+
+  Sequence:
+    Default: 1
+    Type: String
+
+  Stage:
+    Type: String
+
+  SubnetA:
+    Type: AWS::EC2::Subnet::Id
+
+  SubnetB:
+    Type: AWS::EC2::Subnet::Id
+
+  StackUrl:
+    Type: String
+
+  VpcCidr:
+    Type: String
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+
+#Mappings:
+
+#Conditions:
+
+Resources:
+
+  JenkinsApplicationSubStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        AmiId: !Ref AmiId
+        ApplicationName: !Sub jenkins-master-cluster-${Sequence}
+        CreateElasticFileSystem: true
+        InstanceType: !Ref InstanceType
+        LoadBalancerArn: !Ref LoadBalancerArn
+        PrivateSubnetIdList: !Ref PrivateSubnetIdList
+        Stage: !Ref Stage
+        SubnetA: !Ref SubnetA
+        SubnetB: !Ref SubnetB
+        VpcCidr: !Ref VpcCidr
+        VpcId: !Ref VpcId
+      TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
+
+#Outputs:

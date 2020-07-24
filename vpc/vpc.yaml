@@ -211,6 +211,12 @@ Outputs:
   CidrBlock:
     Value: !GetAtt Vpc.CidrBlock
 
+  PrivateSubnetA:
+    Value: !Ref PrivateSubnetA
+
+  PrivateSubnetB:
+    Value: !Ref PrivateSubnetB
+
   PrivateSubnetIdList:
     Value: !Join [',', [ !Ref PrivateSubnetA, !Ref PrivateSubnetB ] ]
 
