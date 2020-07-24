@@ -18,6 +18,10 @@ Parameters:
   PrivateSubnetIdList:
     Type: String
 
+  PublicSubnetIdList:
+    Default: ''
+    Type: String
+
   Sequence:
     Default: 1
     Type: String
@@ -25,36 +29,48 @@ Parameters:
   Stage:
     Type: String
 
+  StackUrl:
+    Type: String
+
   SubnetA:
-    Type: AWS::EC2::Subnet::Id
+    Type: String
 
   SubnetB:
-    Type: AWS::EC2::Subnet::Id
-
-  StackUrl:
     Type: String
 
   VpcCidr:
     Type: String
 
   VpcId:
-    Type: AWS::EC2::VPC::Id
+    Type: String
 
 #Mappings:
 
-#Conditions:
+Conditions:
+
+  CreateLoadBalancer: !Equals [ !Ref LoadBalancerArn, none ]
 
 Resources:
+
+  LoadBalancer:
+    Condition: CreateLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
+      Scheme: internet-facing
+      Subnets: !Split [ ',', !Ref PublicSubnetIdList ]
+      Type: application
 
   JenkinsApplicationSubStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
         AmiId: !Ref AmiId
-        ApplicationName: !Sub jenkins-master-cluster-${Sequence}
+        ApplicationName: !Sub jenkins-master-${Sequence}
         CreateElasticFileSystem: true
         InstanceType: !Ref InstanceType
-        LoadBalancerArn: !Ref LoadBalancerArn
+        LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
         PrivateSubnetIdList: !Ref PrivateSubnetIdList
         Stage: !Ref Stage
         SubnetA: !Ref SubnetA
