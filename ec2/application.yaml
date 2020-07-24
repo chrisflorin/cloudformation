@@ -85,7 +85,7 @@ Parameters:
 
 Conditions:
 
-  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
+  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CodeDeployApplication, none ] ]
   CreateElasticFileSystem: !Equals [ !Ref CreateElasticFileSystem, true ]
   CreateHttpLoadBalancerListener: !Equals [ !Ref Certificate, none ]
   CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
