@@ -199,7 +199,7 @@ Resources:
   SshSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
+      GroupDescription: !Sub ${ApplicationName}-${Stage}-ssh-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -210,7 +210,7 @@ Resources:
   WebSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-web-security-group
+      GroupDescription: !Sub ${ApplicationName}-${Stage}-web-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref Port
