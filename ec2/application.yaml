@@ -147,7 +147,7 @@ Resources:
       HealthyThresholdCount: 2
       Matcher:
         HttpCode: 200
-      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-tg
+      Name: !Sub ${ApplicationName}-${Stage}-tg
       Port: !Ref Port
       Protocol: !Ref Protocol
       UnhealthyThresholdCount: 2
