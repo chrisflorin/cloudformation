@@ -75,6 +75,9 @@ Resources:
         Stage: !Ref Stage
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
+        UserData: Fn::Join
+          - '\n'
+          - 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${MasterStorage}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
         VpcCidr: !Ref VpcCidr
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
