@@ -57,7 +57,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
+      Name: !Sub jenkins-master-${Sequence}-${Stage}-app-lb
       Scheme: internet-facing
       Subnets: !Split [ ',', !Ref PublicSubnetIdList ]
       Type: application
