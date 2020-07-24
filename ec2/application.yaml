@@ -129,7 +129,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
+      Name: !Sub ${ApplicationName}-${Stage}-app-lb
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Split [ ',', !Ref LoadBalancerSubnetIdList ]
       Type: application
