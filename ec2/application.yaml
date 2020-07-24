@@ -118,7 +118,7 @@ Resources:
       IpAddressType: ipv4
       Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
       Scheme: !Ref LoadBalancerScheme
-      Subnets: !Ref LoadBalancerSubnetIdList
+      Subnets: !Split [ ',', !Ref LoadBalancerSubnetIdList ]
       Type: application
 
 #4) Target Group
