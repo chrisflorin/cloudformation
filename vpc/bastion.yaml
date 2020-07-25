@@ -118,6 +118,7 @@ Resources:
           'Fn::Base64': !Sub |
             #!/bin/bash
             echo export EIP_ALLOCATION_ID="${ElasticIp}" >> /etc/profile
+            git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
