@@ -88,7 +88,7 @@ Resources:
         UserData:
           'Fn::Join':
             - '\n'
-            - 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${EfsFileSystemStack.Outputs.EfsFileSystemId}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
+            - !Sub 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${EfsFileSystemStack.Outputs.EfsFileSystemId}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
         VpcCidr: !Ref VpcCidr
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
