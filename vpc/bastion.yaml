@@ -120,13 +120,17 @@ Resources:
     Properties:
       GroupDescription: !Sub ${VpcId}-bastion-security-group
       SecurityGroupEgress:
-        - IpProtocol: -1
-          CidrIp: !Ref VpcCidr
+        - CidrIp: !Ref VpcCidr
+          IpProtocol: -1
+        - CidrIp: '0.0.0.0/0'
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
       SecurityGroupIngress:
-        - IpProtocol: tcp
+        - CidrIp: '0.0.0.0/0'
           FromPort: 22
+          IpProtocol: tcp
           ToPort: 22
-          CidrIp: '0.0.0.0/0'
       VpcId: !Ref VpcId
 
 #Outputs:
