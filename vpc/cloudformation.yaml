@@ -12,6 +12,10 @@ Parameters:
     Default: t3.nano
     Type: String
 
+  BastionKeyName:
+    Default: none
+    Type: String
+
   CidrClassB:
     Type: String
 
@@ -37,6 +41,7 @@ Parameters:
 Conditions:
 
   HasBastion: !Not [ !Equals [ !Ref BastionAmiId, none ] ]
+  HasBastionKeyName: !Not [ !Equals [ !Ref BastionKeyName, none ] ]
   HasDomain: !Not [ !Equals [ !Ref Domain, none ] ]
 
 Resources:
@@ -48,6 +53,7 @@ Resources:
       Parameters:
         AmiId: !Ref BastionAmiId
         InstanceType: !Ref BastionInstanceType
+        KeyName: !If [ HasBastionKeyName, !Ref BastionKeyName, !Ref 'AWS::NoValue' ]
         PublicSubnetIdList: !GetAtt VpcSubStack.Outputs.PublicSubnetIdList
         Stage: !Ref Stage
         VpcCidr: !GetAtt VpcSubStack.Outputs.CidrBlock
