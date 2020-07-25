@@ -76,7 +76,7 @@ Parameters:
     Type: String
 
   UserData:
-    Default: '#/bin/bash'
+    Default: ''
     Type: String
 
   VpcCidr:
@@ -111,7 +111,10 @@ Resources:
           - !Ref WebSecurityGroup
         UserData:
           'Fn::Base64': !Sub |
-            ${UserData}
+        UserData: Fn::Join
+          - '\n'
+          - '#!/bin/bash'
+          - !Ref UserData
 
 #2) Auto Scaling Group
   AutoScalingGroup:
@@ -267,37 +270,3 @@ Resources:
         TargetGroupInfoList:
           - Name: !GetAtt TargetGroup.TargetGroupName
       ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
-
-#10) ElasticFileSystem
-  EfsFileSystem:
-    Condition: CreateElasticFileSystem
-    Type: AWS::EFS::FileSystem
-    Properties:
-      PerformanceMode: generalPurpose
-
-  EfsFileSystemMountTargetA:
-    Type: AWS::EFS::MountTarget
-    Properties:
-      FileSystemId: !Ref EfsFileSystem
-      SecurityGroups:
-        - !Ref EfsSecurityGroup
-      SubnetId: !Ref SubnetA
-
-  EfsFileSystemMountTargetB:
-    Type: AWS::EFS::MountTarget
-    Properties:
-      FileSystemId: !Ref EfsFileSystem
-      SecurityGroups:
-        - !Ref EfsSecurityGroup
-      SubnetId: !Ref SubnetB
-
-  EfsSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: description
-      SecurityGroupIngress:
-        - FromPort: 2049
-          IpProtocol: tcp
-          SourceSecurityGroupId: !Ref WebSecurityGroup
-          ToPort: 2049
-      VpcId: !Ref VpcId

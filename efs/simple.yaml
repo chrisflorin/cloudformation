@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+Metadata:
+
+Parameters:
+
+  PerformanceMode:
+    Default: generalPurpose
+    Type: String
+
+  SubnetA:
+    Type: AWS::EC2::Subnet::Id
+
+  SubnetB:
+    Type: AWS::EC2::Subnet::Id
+
+  VpcCidr:
+    Type: String
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+
+#Mappings:
+
+#Conditions:
+
+Resources:
+
+  EfsFileSystem:
+    Type: AWS::EFS::FileSystem
+    Properties:
+      PerformanceMode: !Ref PerformanceMode
+
+  EfsFileSystemMountTargetA:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref EfsFileSystem
+      SecurityGroups:
+        - !Ref EfsSecurityGroup
+      SubnetId: !Ref SubnetA
+
+  EfsFileSystemMountTargetB:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref EfsFileSystem
+      SecurityGroups:
+        - !Ref EfsSecurityGroup
+      SubnetId: !Ref SubnetB
+
+  EfsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: description
+      SecurityGroupIngress:
+        - FromPort: 2049
+          IpProtocol: tcp
+          ToPort: 2049
+          VpcCidr: !Ref VpcCidr
+      VpcId: !Ref VpcId
+
+Outputs:
+
+  EfsFileSystemId:
+    Value: !Ref EfsFileSystem

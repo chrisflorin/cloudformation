@@ -52,6 +52,16 @@ Conditions:
 
 Resources:
 
+  EfsFileSystem:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        SubnetA: !Ref SubnetA
+        SubnetB: !Ref SubnetB
+        VpcCidr: !Ref VpcCidr
+        VpcId: !Ref VpcId
+      TemplateURL: !Sub ${StackUrl}/efs/simple.yaml
+
   LoadBalancer:
     Condition: CreateLoadBalancer
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -77,7 +87,7 @@ Resources:
         SubnetB: !Ref SubnetB
         UserData: Fn::Join
           - '\n'
-          - 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${MasterStorage}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
+          - 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${EfsFileSystemStack.Outputs.EfsFileSystemId}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
         VpcCidr: !Ref VpcCidr
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
