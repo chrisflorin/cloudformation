@@ -33,6 +33,10 @@ Parameters:
   InstanceType:
     Type: String
 
+  KeyName:
+    Default: none
+    Type: String
+
   LoadBalancerArn:
     Default: none
     Type: String
@@ -94,6 +98,7 @@ Conditions:
   CreateHttpLoadBalancerListener: !Equals [ !Ref Certificate, none ]
   CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
+  HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
 
 Resources:
 
@@ -106,6 +111,7 @@ Resources:
           Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
+        KeyName: !If [ HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue' ]
         SecurityGroupIds:
           - !Ref SshSecurityGroup
           - !Ref WebSecurityGroup
