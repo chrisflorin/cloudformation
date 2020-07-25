@@ -26,9 +26,6 @@ Parameters:
   Name:
     Type: String
 
-  Region:
-    Type: String
-
   StackUrl:
     Type: String
 
@@ -83,7 +80,6 @@ Resources:
       Parameters:
         CidrClassB: !Ref CidrClassB
         Name: !Ref Name
-        Region: !Ref Region
         Stage: !Ref Stage
       TemplateURL: !Sub ${StackUrl}/vpc/vpc.yaml
 
