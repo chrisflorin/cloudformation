@@ -55,7 +55,7 @@ Resources:
         - FromPort: 2049
           IpProtocol: tcp
           ToPort: 2049
-          VpcCidr: !Ref VpcCidr
+          CidrIp: !Ref VpcCidr
       VpcId: !Ref VpcId
 
 Outputs:
