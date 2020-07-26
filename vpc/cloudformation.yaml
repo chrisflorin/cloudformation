@@ -88,7 +88,7 @@ Resources:
       Parameters:
         AmiId: !Ref NatAmiId
         KeyName: !If [ HasNatKeyName, !Ref NatKeyName, !Ref 'AWS::NoValue' ]
-        PrivateSubnetRouteTable: !GetAtt VpcSubStack.Outputs.PrivateSubnetARouteTable
+        PrivateRouteTableId: !GetAtt VpcSubStack.Outputs.PrivateSubnetARouteTable
         VpcCidr: !GetAtt VpcSubStack.Outputs.VpcCidr
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
       TemplateURL: !Sub ${StackUrl}/vpc/nat-instance.yaml
