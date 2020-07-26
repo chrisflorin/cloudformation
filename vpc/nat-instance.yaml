@@ -18,6 +18,9 @@ Parameters:
   PrivateRouteTableId:
     Type: String
 
+  PublicSubnetIdList:
+    Type: List<AWS::EC2::Subnet::Id>
+
   VpcCidr:
     Type: String
 
@@ -31,6 +34,20 @@ Conditions:
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
 
 Resources:
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: 1
+      MinSize: 1
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}
+          PropagateAtLaunch: true
+      VPCZoneIdentifier: !Ref PublicSubnetIdList
 
   ElasticIp:
     Type: AWS::EC2::EIP
