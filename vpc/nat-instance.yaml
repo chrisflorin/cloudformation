@@ -73,6 +73,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - ec2:AssociateAddress
+                  - ec2:ModifyInstanceAttribute
                   - ec2:CreateRoute
                   - ec2:ReplaceRoute
                 Resource:
