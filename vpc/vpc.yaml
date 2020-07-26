@@ -52,7 +52,7 @@ Resources:
   PrivateNatNetworkAclEntryAllowVpcIn:
     Type: AWS::EC2::NetworkAclEntry
     Properties:
-      CidrBlock: !GetAtt Vpc.CidrBlock
+      CidrBlock: '0.0.0.0/0'
       Egress: false
       NetworkAclId: !Ref PrivateNatNetworkAcl
       Protocol: -1
