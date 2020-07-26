@@ -82,6 +82,18 @@ Resources:
         Domain: !Ref Domain
       TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
 
+  SubnetANatInstance:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        AmiId: !Ref NatAmiId
+        KeyName: !If [ HasNatKeyName, !Ref NatKeyName, !Ref 'AWS::NoValue' ]
+        PrivateRouteTableId: !GetAtt VpcSubStack.Outputs.PrivateNatSubnetARouteTable
+        PublicSubnetIdList: !GetAtt VpcSubStack.Outputs.PublicSubnetIdList
+        VpcCidr: !GetAtt VpcSubStack.Outputs.VpcCidr
+        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
+      TemplateURL: !Sub ${StackUrl}/vpc/nat-instance.yaml
+
   VpcSubStack:
     Type: AWS::CloudFormation::Stack
     Properties:
