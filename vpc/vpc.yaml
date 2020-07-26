@@ -33,7 +33,7 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.96.0/20
       VpcId: !Ref Vpc
 
-  PrivateNatSubnetARouteTable:
+  PrivateNatRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref Vpc
@@ -42,7 +42,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateNatSubnetA
-      RouteTableId: !Ref PrivateNatSubnetARouteTable
+      RouteTableId: !Ref PrivateNatRouteTable
 
   PrivateNatNetworkAcl:
     Type: AWS::EC2::NetworkAcl
@@ -88,16 +88,11 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.112.0/20
       VpcId: !Ref Vpc
 
-  PrivateNatSubnetBRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-
   PrivateNatSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateNatSubnetB
-      RouteTableId: !Ref PrivateNatSubnetBRouteTable
+      RouteTableId: !Ref PrivateNatRouteTable
 
   PrivateNetworkAcl:
     Type: AWS::EC2::NetworkAcl
@@ -137,7 +132,7 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.0.0/20
       VpcId: !Ref Vpc
 
-  PrivateSubnetARouteTable:
+  PrivateSubnetRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref Vpc
@@ -146,7 +141,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnetA
-      RouteTableId: !Ref PrivateSubnetARouteTable
+      RouteTableId: !Ref PrivateSubnetRouteTable
 
   PrivateNetworkAclSubnetBAssociation:
     Type: AWS::EC2::SubnetNetworkAclAssociation
@@ -161,16 +156,11 @@ Resources:
       CidrBlock: !Sub 10.${CidrClassB}.16.0/20
       VpcId: !Ref Vpc
 
-  PrivateSubnetBRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-
   PrivateSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnetB
-      RouteTableId: !Ref PrivateSubnetBRouteTable
+      RouteTableId: !Ref PrivateSubnetRouteTable
 
   PublicNetworkAcl:
     Type: AWS::EC2::NetworkAcl
@@ -211,7 +201,7 @@ Resources:
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc
 
-  PublicSubnetARouteTable:
+  PublicSubnetRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref Vpc
@@ -220,14 +210,14 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnetA
-      RouteTableId: !Ref PublicSubnetARouteTable
+      RouteTableId: !Ref PublicSubnetRouteTable
 
   PublicSubnetARouteTableInternetRoute:
     Type: AWS::EC2::Route
     Properties:
       DestinationCidrBlock: '0.0.0.0/0'
       GatewayId: !Ref InternetGateway
-      RouteTableId: !Ref PublicSubnetARouteTable
+      RouteTableId: !Ref PublicSubnetRouteTable
     DependsOn:
       - VpcGatewayAttachment
 
@@ -245,23 +235,18 @@ Resources:
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc
 
-  PublicSubnetBRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref Vpc
-
   PublicSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnetB
-      RouteTableId: !Ref PublicSubnetBRouteTable
+      RouteTableId: !Ref PublicSubnetRouteTable
 
   PublicSubnetBRouteTableInternetRoute:
     Type: AWS::EC2::Route
     Properties:
       DestinationCidrBlock: '0.0.0.0/0'
       GatewayId: !Ref InternetGateway
-      RouteTableId: !Ref PublicSubnetBRouteTable
+      RouteTableId: !Ref PublicSubnetRouteTable
     DependsOn:
       - VpcGatewayAttachment
 
@@ -290,8 +275,8 @@ Outputs:
   PrivateSubnetA:
     Value: !Ref PrivateSubnetA
 
-  PrivateNatSubnetARouteTable:
-    Value: !Ref PrivateNatSubnetARouteTable
+  PrivateNatRouteTable:
+    Value: !Ref PrivateNatRouteTable
 
   PrivateSubnetB:
     Value: !Ref PrivateSubnetB

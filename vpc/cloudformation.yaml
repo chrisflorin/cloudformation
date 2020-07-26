@@ -92,7 +92,7 @@ Resources:
       Parameters:
         AmiId: !Ref NatAmiId
         KeyName: !If [ HasNatKeyName, !Ref NatKeyName, !Ref 'AWS::NoValue' ]
-        PrivateRouteTableId: !GetAtt VpcSubStack.Outputs.PrivateNatSubnetARouteTable
+        PrivateRouteTableId: !GetAtt VpcSubStack.Outputs.PrivateNatRouteTable
         PublicSubnetId: !GetAtt VpcSubStack.Outputs.PublicSubnetA
         VpcCidr: !GetAtt VpcSubStack.Outputs.VpcCidr
         VpcId: !GetAtt VpcSubStack.Outputs.VpcId
