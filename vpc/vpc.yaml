@@ -85,7 +85,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select [1, !GetAZs '']
-      CidrBlock: !Sub 10.${CidrClassB}.128.0/20
+      CidrBlock: !Sub 10.${CidrClassB}.112.0/20
       VpcId: !Ref Vpc
 
   PrivateNatSubnetBRouteTable:
