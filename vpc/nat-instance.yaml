@@ -18,7 +18,7 @@ Parameters:
   PrivateRouteTableId:
     Type: String
 
-  PrivateNatSubnetId:
+  PublicSubnetId:
     Type: AWS::EC2::Subnet::Id
 
   VpcCidr:
@@ -48,7 +48,7 @@ Resources:
           Value: !Sub ${AWS::StackName}
           PropagateAtLaunch: true
       VPCZoneIdentifier:
-        - !Ref PrivateNatSubnetId
+        - !Ref PublicSubnetId
 
   ElasticIp:
     Type: AWS::EC2::EIP

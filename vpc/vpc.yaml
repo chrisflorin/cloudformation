@@ -299,6 +299,9 @@ Outputs:
   PrivateSubnetIdList:
     Value: !Join [',', [ !Ref PrivateSubnetA, !Ref PrivateSubnetB ] ]
 
+  PublicSubnetA:
+    Value: !Ref PublicSubnetA
+
   PublicSubnetIdList:
     Value: !Join [',', [ !Ref PublicSubnetA, !Ref PublicSubnetB ] ]
 
