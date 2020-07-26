@@ -122,7 +122,7 @@ Resources:
             find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
             cd /opt/cloudformation/sh
             ./common/apt-get.sh
-            ./bastion/associate-address.sh
+            ./nat-instance/associate-address.sh
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup

@@ -26,6 +26,13 @@ Parameters:
   Name:
     Type: String
 
+  NatAmiId:
+    Type: String
+
+  NatKeyName:
+    Default: none
+    Type: String
+
   StackUrl:
     Type: String
 
@@ -40,6 +47,7 @@ Conditions:
   HasBastion: !Not [ !Equals [ !Ref BastionAmiId, none ] ]
   HasBastionKeyName: !Not [ !Equals [ !Ref BastionKeyName, none ] ]
   HasDomain: !Not [ !Equals [ !Ref Domain, none ] ]
+  HasNatKeyName: !Not [ !Equals [ !Ref NatKeyName, none ] ]
 
 Resources:
 
@@ -73,6 +81,17 @@ Resources:
       Parameters:
         Domain: !Ref Domain
       TemplateURL: !Sub ${StackUrl}/vpc/hosted-zone.yaml
+
+  SubnetANatInstance:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        AmiId: !Ref NatAmiId
+        KeyName: !If [ HasNatKeyName, !Ref NatKeyName, !Ref 'AWS::NoValue' ]
+        PrivateSubnetRouteTable: !GetAtt VpcSubStack.Outputs.PrivateSubnetARouteTable
+        VpcCidr: !GetAtt VpcSubStack.Outputs.VpcCidr
+        VpcId: !GetAtt VpcSubStack.Outputs.VpcId
+      TemplateURL: !Sub ${StackUrl}/vpc/nat-instance.yaml
 
   VpcSubStack:
     Type: AWS::CloudFormation::Stack

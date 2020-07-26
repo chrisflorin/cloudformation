@@ -214,6 +214,9 @@ Outputs:
   PrivateSubnetA:
     Value: !Ref PrivateSubnetA
 
+  PrivateSubnetARouteTable:
+    Value: !Ref PrivateSubnetARouteTable
+
   PrivateSubnetB:
     Value: !Ref PrivateSubnetB
 
