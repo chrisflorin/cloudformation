@@ -19,7 +19,7 @@ Parameters:
     Default: none
     Type: String
 
-  PrivateSubnetIdList:
+  PrivateNatSubnetIdList:
     Type: String
 
   PublicSubnetIdList:
@@ -87,14 +87,15 @@ Resources:
         InstanceType: !Ref InstanceType
         KeyName: !If [ HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue' ]
         LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
-        PrivateSubnetIdList: !Ref PrivateSubnetIdList
+        PrivateSubnetIdList: !Ref PrivateNatSubnetIdList
         Stage: !Ref Stage
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
         UserData:
-          'Fn::Join':
-            - '\n'
-            - - !Sub 'mkdir /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins && echo "${EfsFileSystemSubStack.Outputs.EfsFileSystemId}:/ /var/lib/jenkins efs tls,_netdev 0 0" >> /etc/fstab && mount -a -t efs'
+          'Fn::Sub': |
+            mkdir /var/lib/jenkins
+            chown -R jenkins:jenkins /var/lib/jenkins
+            mount -t efs -o tls ${EfsFileSystemSubStack.Outputs.EfsFileSystemId}:/var/lib/jenkins efs
         VpcCidr: !Ref VpcCidr
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
