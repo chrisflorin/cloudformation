@@ -33,6 +33,10 @@ Parameters:
     Default: none
     Type: String
 
+  NatInstanceType:
+    Default: t3.micro
+    Type: String
+
   StackUrl:
     Type: String
 
