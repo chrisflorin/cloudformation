@@ -121,7 +121,7 @@ Resources:
             git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
             find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
             cd /opt/cloudformation/sh
-            ./common/apt-get.sh
+            sudo ./common/apt-get.sh
             ./nat-instance/associate-address.sh
 
   SecurityGroup:
