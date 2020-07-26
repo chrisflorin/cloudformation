@@ -284,6 +284,9 @@ Outputs:
   CidrBlock:
     Value: !GetAtt Vpc.CidrBlock
 
+  PrivateNatSubnetA:
+    Value: !Ref PrivateNatSubnetA
+
   PrivateSubnetA:
     Value: !Ref PrivateSubnetA
 
