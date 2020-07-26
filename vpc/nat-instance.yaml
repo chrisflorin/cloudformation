@@ -109,7 +109,7 @@ Resources:
             sudo git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
             sudo find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
             cd /opt/cloudformation/sh
-            ./common/yum.sh
+            sudo ./common/yum.sh
             ./nat-instance/associate-address.sh
             ./nat-instance/disable-source-checks.sh
             ./nat-instance/replace-route.sh
