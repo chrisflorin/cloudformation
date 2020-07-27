@@ -91,11 +91,18 @@ Resources:
         Stage: !Ref Stage
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
-#        UserData:
-#          'Fn::Sub': |
-            #mkdir /var/lib/jenkins
-            #chown -R jenkins:jenkins /var/lib/jenkins
-            #mount -t efs -o tls ${EfsFileSystemSubStack.Outputs.EfsFileSystemId}:/var/lib/jenkins efs
+        UserData:
+          'Fn::Sub': |
+            echo export EFS_FILE_SYSTEM_ID="${EfsFileSystemSubStack.Outputs.EfsFileSystemId}" >> /etc/profile
+            sudo cat "${EfsFileSystemSubStack.Outputs.IpAddress} ${EfsFileSystemSubStack.Outputs.EfsFileSystemDns}" >> /etc/hosts
+
+            sudo yum install -y git
+            git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
+            find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
+            cd /opt/cloudformation/sh
+
+            sudo ./common/yum.sh
+            sudo ./jenkins/mount-efs.sh
         VpcCidr: !Ref VpcCidr
         VpcId: !Ref VpcId
       TemplateURL: !Sub ${StackUrl}/ec2/application.yaml
