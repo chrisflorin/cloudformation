@@ -4,4 +4,4 @@
 
 yum update -y
 
-yum install -y jq
+yum install -y jq git
