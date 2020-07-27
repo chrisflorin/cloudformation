@@ -254,6 +254,7 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Sub 10.${CidrClassB}.0.0/16
+      EnableDnsSupport: true
       Tags:
         - Key: Name
           Value: !Sub ${Name}-${AWS::Region}-${Stage}-vpc
