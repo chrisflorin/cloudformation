@@ -106,6 +106,7 @@ Resources:
             #!/bin/bash
             echo export EIP_ALLOCATION_ID="${ElasticIp.AllocationId}" >> /etc/profile
             echo export ROUTE_TABLE_ID="${PrivateRouteTableId}" >> /etc/profile
+            sudo yum update -y
             sudo yum install -y git
             sudo git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
             sudo find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
