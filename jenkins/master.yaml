@@ -94,7 +94,7 @@ Resources:
         UserData:
           'Fn::Sub': |
             echo export EFS_FILE_SYSTEM_ID="${EfsFileSystemSubStack.Outputs.EfsFileSystemId}" >> /etc/profile
-            sudo cat "${EfsFileSystemSubStack.Outputs.IpAddress} ${EfsFileSystemSubStack.Outputs.EfsFileSystemDns}" >> /etc/hosts
+            sudo cat "${EfsFileSystemSubStack.Outputs.SubnetAMountTargetIpAddress} ${EfsFileSystemSubStack.Outputs.EfsFileSystemDns}" >> /etc/hosts
 
             sudo yum install -y git
             git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
