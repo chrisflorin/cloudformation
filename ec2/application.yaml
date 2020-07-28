@@ -291,8 +291,8 @@ Resources:
 
 Outputs:
 
-  Cird:
+  Cidr:
     Value: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
 
   HasPublicIpAddress:
-    Value: HasPublicIpAddress
+    Value: !Equals [ AssociatePublicIpAddress, true ]
