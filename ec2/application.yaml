@@ -10,6 +10,10 @@ Parameters:
   ApplicationName:
     Type: String
 
+  AssociatePublicIpAddress:
+    Default: false
+    Type: String
+
   Certificate:
     Default: none
     Type: String
@@ -112,6 +116,8 @@ Resources:
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
         KeyName: !If [ HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue' ]
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: !Ref AssociatePublicIpAddress
         SecurityGroupIds:
           - !Ref SshSecurityGroup
           - !Ref WebSecurityGroup
