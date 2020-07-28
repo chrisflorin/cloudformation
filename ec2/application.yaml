@@ -118,6 +118,7 @@ Resources:
         KeyName: !If [ HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue' ]
         NetworkInterfaces:
           - AssociatePublicIpAddress: !Ref AssociatePublicIpAddress
+            DeviceIndex: 0
         SecurityGroupIds:
           - !Ref SshSecurityGroup
           - !Ref WebSecurityGroup
