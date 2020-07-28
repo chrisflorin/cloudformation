@@ -103,7 +103,7 @@ Conditions:
   CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
-  HasPublicIpAddress: !Equals [ AssociatePublicIpAddress, true ]
+  HasPublicIpAddress: !Equals [ !Ref AssociatePublicIpAddress, true ]
 
 Resources:
 
