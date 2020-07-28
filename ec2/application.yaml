@@ -18,6 +18,10 @@ Parameters:
     Default: none
     Type: String
 
+  CreateElasticFileSystem:
+    Default: false
+    Type: String
+
   CreateLoadBalancer:
     Default: false
     Type: String
@@ -27,6 +31,10 @@ Parameters:
     Type: String
 
   InstanceType:
+    Type: String
+
+  KeyName:
+    Default: none
     Type: String
 
   LoadBalancerArn:
@@ -63,6 +71,18 @@ Parameters:
   Stage:
     Type: String
 
+  SubnetA:
+    Default: none
+    Type: String
+
+  SubnetB:
+    Default: none
+    Type: String
+
+  UserData:
+    Default: ''
+    Type: String
+
   VpcCidr:
     Type: String
 
@@ -73,10 +93,12 @@ Parameters:
 
 Conditions:
 
-  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CreateLoadBalancer, none ] ]
+  CreateCodeDeployGroup: !Not [ !Equals [ !Ref CodeDeployApplication, none ] ]
+  CreateElasticFileSystem: !Equals [ !Ref CreateElasticFileSystem, true ]
   CreateHttpLoadBalancerListener: !Equals [ !Ref Certificate, none ]
   CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
+  HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
 
 Resources:
 
@@ -89,9 +111,14 @@ Resources:
           Arn: !GetAtt IamInstanceProfile.Arn
         ImageId: !Ref AmiId
         InstanceType: !Ref InstanceType
+        KeyName: !If [ HasKeyName, !Ref KeyName, !Ref 'AWS::NoValue' ]
         SecurityGroupIds:
           - !Ref SshSecurityGroup
           - !Ref WebSecurityGroup
+        UserData:
+          'Fn::Base64': !Sub |
+            #!/bin/bash
+            ${UserData}
 
 #2) Auto Scaling Group
   AutoScalingGroup:
@@ -103,6 +130,9 @@ Resources:
       MaxSize: '1'
       MinSize: '1'
       Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}
+          PropagateAtLaunch: true
         - Key: Stage
           Value: !Ref Stage
           PropagateAtLaunch: true
@@ -116,7 +146,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-app-lb
+      Name: !Sub ${ApplicationName}-${Stage}-app-lb
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Split [ ',', !Ref LoadBalancerSubnetIdList ]
       Type: application
@@ -134,7 +164,7 @@ Resources:
       HealthyThresholdCount: 2
       Matcher:
         HttpCode: 200
-      Name: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-tg
+      Name: !Sub ${ApplicationName}-${Stage}-tg
       Port: !Ref Port
       Protocol: !Ref Protocol
       UnhealthyThresholdCount: 2
@@ -186,7 +216,7 @@ Resources:
   SshSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-ssh-security-group
+      GroupDescription: !Sub ${ApplicationName}-${Stage}-ssh-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -197,7 +227,7 @@ Resources:
   WebSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-web-security-group
+      GroupDescription: !Sub ${ApplicationName}-${Stage}-web-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref Port
