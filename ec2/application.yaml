@@ -288,3 +288,11 @@ Resources:
         TargetGroupInfoList:
           - Name: !GetAtt TargetGroup.TargetGroupName
       ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
+
+Outputs:
+
+  Cird:
+    Value: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
+
+  HasPublicIpAddress:
+    Value: HasPublicIpAddress
