@@ -295,4 +295,4 @@ Outputs:
     Value: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
 
   HasPublicIpAddress:
-    Value: !Equals [ AssociatePublicIpAddress, true ]
+    Value: !Ref AssociatePublicIpAddress
