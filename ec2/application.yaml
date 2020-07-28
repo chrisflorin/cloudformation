@@ -103,6 +103,7 @@ Conditions:
   CreateHttpsLoadBalancerListener: !Not [ !Equals [ !Ref Certificate, none ] ]
   CreateLoadBalancer: !And [ !Equals [ !Ref CreateLoadBalancer, true ], !Equals [ !Ref LoadBalancerArn, none ] ]
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
+  HasPublicIpAddress: !Equals [ AssociatePublicIpAddress, true ]
 
 Resources:
 
@@ -119,6 +120,9 @@ Resources:
         NetworkInterfaces:
           - AssociatePublicIpAddress: !Ref AssociatePublicIpAddress
             DeviceIndex: 0
+            Groups:
+              - !Ref SshSecurityGroup
+              - !Ref WebSecurityGroup
         SecurityGroupIds:
           - !Ref SshSecurityGroup
           - !Ref WebSecurityGroup
@@ -228,7 +232,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: !Ref VpcCidr
+          CidrIp: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
       VpcId: !Ref VpcId
 
   WebSecurityGroup:
@@ -239,7 +243,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: !Ref Port
           ToPort: !Ref Port
-          CidrIp: !Ref VpcCidr
+          CidrIp: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
       VpcId: !Ref VpcId
 
 #7) Instance Profile/Iam Role
