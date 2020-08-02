@@ -93,7 +93,7 @@ Resources:
       FifoQueue: true
       KmsMasterKeyId: !If [ HasKmsKey, !Ref KmsKey, 'AWS::NoValue' ]
       MessageRetentionPeriod: !Ref MessageRetentionPeriod
-      QueueName: !Sub ${QueueName}-dlq
+      QueueName: !Sub ${QueueName}-dlq.fifo
       ReceiveMessageWaitTimeSeconds: !Ref ReceiveMessageWaitTimeSeconds
       VisibilityTimeout: !Ref VisibilityTimeout
 
@@ -105,7 +105,7 @@ Resources:
       FifoQueue: true
       KmsMasterKeyId: !If [ HasKmsKey, !Ref KmsKey, 'AWS::NoValue' ]
       MessageRetentionPeriod: !Ref MessageRetentionPeriod
-      QueueName: !Ref QueueName
+      QueueName: !Sub ${QueueName}.fifo
       ReceiveMessageWaitTimeSeconds: !Ref ReceiveMessageWaitTimeSeconds
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
