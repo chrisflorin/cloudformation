@@ -76,7 +76,8 @@ Resources:
         - !Ref DeadLetterAlarmTopic
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
-        - Name: !GetAtt DeadLetterQueue.QueueName
+        - Name: QueueName
+          Value: !GetAtt DeadLetterQueue.QueueName
       EvaluationPeriods: 1
       MetricName: ApproximateNumberOfMessagesVisible
       Namespace: 'AWS/SQS'
