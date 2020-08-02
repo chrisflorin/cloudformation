@@ -83,7 +83,7 @@ Resources:
       Namespace: 'AWS/SQS'
       Period: !Ref DeadLetterAlarmPeriod
       Statistic: Sum
-      Threshold: DeadLetterAlarmThreshold
+      Threshold: !Ref DeadLetterAlarmThreshold
 
   DeadLetterQueue:
     Type: AWS::SQS::Queue
