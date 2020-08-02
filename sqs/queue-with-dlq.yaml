@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+#Metadata:
+
+Parameters:
+
+  DeadLetterAlarm:
+    Default: false
+    Type: String
+
+  DeadLetterAlarmPeriod:
+    Default: 300
+    Type: String
+
+  DeadLetterAlarmThreshold:
+    Default: 0
+    Type: String
+
+  DelaySeconds:
+    Default: 0
+    Type: String
+
+  FifoQueue:
+    Default: false
+    Type: String
+
+  KmsKey:
+    Default: none
+    Type: String
+
+  MessageRetentionPeriod:
+    Default: 345600
+    Type: String
+
+  QueueName:
+    Type: String
+
+  ReceiveMessageWaitTimeSeconds:
+    Default: 20
+    Type: String
+
+  SnsSubscriptionRawMessageDelivery:
+    Default: true
+    Type: String
+
+  SnsSubscriptionTopicArn:
+    Default: none
+    Type: String
+
+  VisibilityTimeout:
+    Default: 30
+    Type: String
+
+#Mappings:
+
+Conditions:
+
+  HasDeadLetterAlarm: !Equals [ !Ref DeadLetterAlarm, true ]
+  HasKmsKey: !Not [ !Equals [ !Ref KmsKey, none ] ]
+  HasSnsSubscription: !Not [ !Equals [ !Ref SnsSubscriptionTopicArn, none ] ]
+  IsFifo: !Equals [ !Ref FifoQueue, true ]
+
+Resources:
+
+  DeadLetterAlarmTopic:
+    Condition: HasDeadLetterAlarm
+    Type: AWS::SNS::Topic
+    Properties:
+      KmsMasterKeyId: !If [ HasKmsKey, !Ref KmsKey, 'AWS::NoValue' ]
+      TopicName: !Sub ${QueueName}-topic
+
+  DeadLetterCloudWatchAlarm:
+    Condition: HasDeadLetterAlarm
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !Ref DeadLetterAlarmTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: !GetAtt DeadLetterQueue.QueueName
+      EvaluationPeriods: 1
+      MetricName: ApproximateNumberOfMessagesVisible
+      Namespace: 'AWS/SQS'
+      Period: !Ref DeadLetterAlarmPeriod
+      Statistic: Sum
+      Threshold: DeadLetterAlarmThreshold
+
+  DeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      ContentBasedDeduplication: Boolean
+      DelaySeconds: !Ref DelaySeconds
+      FifoQueue: !Ref FifoQueue
+      KmsMasterKeyId: !If [ HasKmsKey, !Ref KmsKey, 'AWS::NoValue' ]
+      MessageRetentionPeriod: !Ref MessageRetentionPeriod
+      QueueName:
+        !Sub
+          - ${QueueName}-dlq${Fifo}
+          - QueueName: !Ref QueueName
+            Fifo: !If [ IsFifo, '.fifo', '' ]
+      ReceiveMessageWaitTimeSeconds: !Ref ReceiveMessageWaitTimeSeconds
+      VisibilityTimeout: !Ref VisibilityTimeout
+
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      ContentBasedDeduplication: Boolean
+      DelaySeconds: !Ref DelaySeconds
+      FifoQueue: !Ref FifoQueue
+      KmsMasterKeyId: !If [ HasKmsKey, !Ref KmsKey, 'AWS::NoValue' ]
+      MessageRetentionPeriod: !Ref MessageRetentionPeriod
+      QueueName:
+        !Sub
+          - ${QueueName}${Fifo}
+          - QueueName: !Ref QueueName
+            Fifo: !If [ IsFifo, '.fifo', '' ]
+      ReceiveMessageWaitTimeSeconds: !Ref ReceiveMessageWaitTimeSeconds
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
+      VisibilityTimeout: !Ref VisibilityTimeout
+
+  SnsSubscription:
+    Condition: HasSnsSubscription
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt Queue.Arn
+      Protocol: sqs
+      RawMessageDelivery: !Ref SnsSubscriptionRawMessageDelivery
+      TopicArn: !Ref SnsSubscriptionTopicArn
+
+Outputs:
+
+  DeadLetterQueueArn:
+    Value: !GetAtt DeadLetterQueue.Arn
+
+  QueueArn:
+    Value: !GetAtt Queue.Arn
