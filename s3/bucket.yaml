@@ -28,6 +28,6 @@ Resources:
           "TopicConfigurations": [
             { "Event": "s3:ObjectCreated:Put",
               "Topic": !Ref SnsSubscriptionTopicArn }
-          ]}, 'AWS::NoValue' ]
+          ]}, {'AWS::NoValue'} ]
 
 #Outputs:
