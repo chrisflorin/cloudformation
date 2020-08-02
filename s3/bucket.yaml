@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+#Metadata:
+
+Parameters:
+
+  BucketName:
+    Type: String
+
+  SnsSubscriptionTopicArn:
+    Default: none
+    Type: String
+
+#Mappings:
+
+Conditions:
+
+  HasSnsSubscription: !Not [ !Equals [ !Ref SnsSubscriptionTopicArn, none ] ]
+
+Resources:
+
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      NotificationConfiguration:
+        - !If [ HasSnsSubscription, {
+          "TopicConfigurations":
+            - "Event": "s3:ObjectCreated:Put"
+              "Topic": !Ref SnsSubscriptionTopicArn
+          }, 'AWS::NoValue' ]
+
+#Outputs:
