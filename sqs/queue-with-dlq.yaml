@@ -24,6 +24,10 @@ Parameters:
     Default: none
     Type: String
 
+  MaxReceiveCount:
+    Default: 3
+    Type: String
+
   MessageRetentionPeriod:
     Default: 345600
     Type: String
@@ -102,6 +106,7 @@ Resources:
       ReceiveMessageWaitTimeSeconds: !Ref ReceiveMessageWaitTimeSeconds
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
+        maxReceiveCount: !Ref MaxReceiveCount
       VisibilityTimeout: !Ref VisibilityTimeout
 
   SnsSubscription:
