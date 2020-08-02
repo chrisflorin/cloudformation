@@ -124,5 +124,8 @@ Outputs:
   DeadLetterQueueArn:
     Value: !GetAtt DeadLetterQueue.Arn
 
+  DeadLetterAlarmTopicArn:
+    Value: !Ref DeadLetterAlarmTopic
+
   QueueArn:
     Value: !GetAtt Queue.Arn

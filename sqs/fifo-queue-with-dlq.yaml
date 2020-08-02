@@ -112,19 +112,13 @@ Resources:
         maxReceiveCount: !Ref MaxReceiveCount
       VisibilityTimeout: !Ref VisibilityTimeout
 
-  SnsSubscription:
-    Condition: HasSnsSubscription
-    Type: AWS::SNS::Subscription
-    Properties:
-      Endpoint: !GetAtt Queue.Arn
-      Protocol: sqs
-      RawMessageDelivery: !Ref SnsSubscriptionRawMessageDelivery
-      TopicArn: !Ref SnsSubscriptionTopicArn
-
 Outputs:
 
   DeadLetterQueueArn:
     Value: !GetAtt DeadLetterQueue.Arn
+
+  DeadLetterAlarmTopicArn:
+    Value: !Ref DeadLetterAlarmTopic
 
   QueueArn:
     Value: !GetAtt Queue.Arn
