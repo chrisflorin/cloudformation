@@ -24,9 +24,11 @@ Resources:
     Properties:
       BucketName: !Ref BucketName
       NotificationConfiguration:
-        Condition: HasSnsSubscription
-        TopicConfigurations:
-          Event: s3:ObjectCreated:Put
-          Topic: !Ref SnsSubscriptionTopicArn
+        !If
+        - HasSnsSubscription
+        - TopicConfigurations:
+            - Event: s3:ObjectCreated:Put
+              Topic: !Ref SnsSubscriptionTopicArn
+        - !Ref 'AWS::NoValue'
 
 #Outputs:
