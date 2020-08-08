@@ -61,7 +61,7 @@ Conditions:
 
 Resources:
 
-  DeadLetterAlarmTopic:
+  DeadLetterAlarmSnsTopic:
     Condition: HasDeadLetterAlarm
     Type: AWS::SNS::Topic
     Properties:
@@ -73,7 +73,7 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmActions:
-        - !Ref DeadLetterAlarmTopic
+        - !Ref DeadLetterAlarmSnsTopic
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: QueueName
@@ -125,7 +125,7 @@ Outputs:
     Value: !GetAtt DeadLetterQueue.Arn
 
   DeadLetterAlarmTopicArn:
-    Value: !Ref DeadLetterAlarmTopic
+    Value: !Ref DeadLetterAlarmSnsTopic
 
   QueueArn:
     Value: !GetAtt Queue.Arn
