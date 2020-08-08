@@ -31,4 +31,26 @@ Resources:
               Topic: !Ref SnsSubscriptionTopicArn
         - !Ref 'AWS::NoValue'
 
+  SnsTopicPolicy:
+    Condition: HasSnsSubscription
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref SnsSubscriptionTopicArn
+      PolicyDocument:
+        Id: SNSTopicPolicy
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - '*'
+            Action:
+              - sns:Publish
+            Resource:
+              - !Ref SnsSubscriptionTopicArn
+            Condition:
+              ArnLike:
+                aws:SourceArn: !Sub 'arn:aws:s3:::${BucketName}'
+
 #Outputs:
