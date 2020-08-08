@@ -61,7 +61,7 @@ Parameters:
     Default: HTTP
     Type: String
 
-  PrivateSubnetIdList:
+  SubnetIdList:
     Type: List<AWS::EC2::Subnet::Id>
 
   Sequence:
@@ -149,7 +149,7 @@ Resources:
           PropagateAtLaunch: true
       TargetGroupARNs:
         - !Ref TargetGroup
-      VPCZoneIdentifier: !Ref PrivateSubnetIdList
+      VPCZoneIdentifier: !Ref SubnetIdList
 
 #3) Load Balancer
   LoadBalancer:
