@@ -49,8 +49,8 @@ Resources:
               - sns:Publish
             Resource:
               - !Ref SnsSubscriptionTopicArn
-#            Condition:
-#              ArnLike:
-#                aws:SourceArn: !Sub 'arn:aws:s3:::${BucketName}'
+            Condition:
+              ArnLike:
+                aws:SourceArn: !Sub 'arn:aws:s3:::${Bucket}'
 
 #Outputs:
