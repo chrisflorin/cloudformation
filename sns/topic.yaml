@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: ---
 #Metadata:
 
-Parameters:
+#Parameters:
 
 #Mappings:
 
@@ -13,5 +13,7 @@ Resources:
   SnsTopic:
     Type: AWS::SNS::Topic
 
+Outputs:
 
-#Outputs:
+  SnsTopicArn:
+    Value: !Ref SnsTopic
