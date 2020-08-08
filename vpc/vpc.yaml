@@ -279,6 +279,9 @@ Outputs:
   PrivateNatRouteTable:
     Value: !Ref PrivateNatRouteTable
 
+  PrivateNatSubnetIdList:
+    Value: !Join [',', [ !Ref PrivateNatSubnetA, !Ref PrivateNatSubnetB ] ]
+
   PrivateSubnetB:
     Value: !Ref PrivateSubnetB
 
