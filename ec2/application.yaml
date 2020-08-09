@@ -283,7 +283,7 @@ Resources:
       AutoScalingGroups:
         - !Ref AutoScalingGroup
       DeploymentConfigName: CodeDeployDefault.OneAtATime
-      DeploymentGroupName: !Sub ${Stage}-${Sequence}
+      DeploymentGroupName: !Sub ${ApplicationName}-${Stage}-${Sequence}
       LoadBalancerInfo:
         TargetGroupInfoList:
           - Name: !GetAtt TargetGroup.TargetGroupName
