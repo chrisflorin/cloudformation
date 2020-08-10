@@ -125,7 +125,7 @@ Outputs:
     Value: !GetAtt DeadLetterQueue.Arn
 
   DeadLetterAlarmTopicArn:
-    Value: !Ref DeadLetterAlarmSnsTopic
+    Value: !If [ HasDeadLetterAlarm, !Ref DeadLetterAlarmSnsTopic, 'AWS::NoValue' ]
 
   QueueArn:
     Value: !GetAtt Queue.Arn
