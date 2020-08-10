@@ -53,6 +53,6 @@ Resources:
               - !Ref SnsSubscriptionTopicArn
             Condition:
               ArnLike:
-                aws:SourceArn: !Sub 'arn:aws:s3:::!Sub ${AWS::AccountId}-${BucketName}'
+                aws:SourceArn: !Sub 'arn:aws:s3:::${AWS::AccountId}-${BucketName}'
 
 #Outputs:
