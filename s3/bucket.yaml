@@ -30,6 +30,8 @@ Resources:
             - Event: s3:ObjectCreated:Put
               Topic: !Ref SnsSubscriptionTopicArn
         - !Ref 'AWS::NoValue'
+    DependsOn:
+      - SnsTopicPolicy
 
   SnsTopicPolicy:
     Condition: HasSnsSubscription
