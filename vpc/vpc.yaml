@@ -286,8 +286,8 @@ Outputs:
   PrivateSubnetA:
     Value: !Ref PrivateSubnetA
 
-  PrivateNatRouteTable:
-    Value: !Ref PrivateNatRouteTable
+  PrivateNatSubnetARouteTable:
+    Value: !Ref PrivateNatSubnetARouteTable
 
   PrivateNatSubnetIdList:
     Value: !Join [',', [ !Ref PrivateNatSubnetA, !Ref PrivateNatSubnetB ] ]
