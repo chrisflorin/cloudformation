@@ -104,17 +104,15 @@ Resources:
         UserData:
           'Fn::Base64': !Sub |
             #!/bin/bash
-            echo export EIP_ALLOCATION_ID="${ElasticIp.AllocationId}" >> /etc/profile
-            echo export ROUTE_TABLE_ID="${RouteTableId}" >> /etc/profile
             sudo yum update -y
             sudo yum install -y git
             sudo git clone https://github.com/chrisflorin/cloudformation /opt/cloudformation
             sudo find /opt/cloudformation/ -type f -iname "*.sh" -exec chmod +x {} \;
             cd /opt/cloudformation/sh
             sudo ./common/yum.sh
-            ./nat-instance/associate-address.sh
+            ./nat-instance/associate-address.sh ${ElasticIp.AllocationId}
             ./nat-instance/disable-source-checks.sh
-            ./nat-instance/replace-route.sh
+            ./nat-instance/replace-route.sh ${RouteTableId}
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
