@@ -21,6 +21,9 @@ Parameters:
   RouteTableId:
     Type: String
 
+  RouteTable2Id:
+    Type: String
+
   VpcCidr:
     Type: String
 
@@ -113,6 +116,7 @@ Resources:
             ./nat-instance/associate-address.sh ${ElasticIp.AllocationId}
             ./nat-instance/disable-source-checks.sh
             ./nat-instance/replace-route.sh ${RouteTableId}
+            ./nat-instance/replace-route.sh ${RouteTable2Id}
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
