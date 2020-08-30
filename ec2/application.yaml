@@ -273,6 +273,15 @@ Resources:
                   - ec2:AssociateAddress
                 Resource:
                   - '*'
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-codedeploy-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:*'
+                Resource:
+                  - '*'
 
 #9) CodeDeploy Group
   CodeDeployGroup:
