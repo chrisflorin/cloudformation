@@ -11,11 +11,39 @@ Parameters:
     Type: String
 
   DeletionProtection:
-    Default: false
+    Default: true
+    Type: String
+
+  Engine:
+    Default: aurora-mysql
+    Type: String
+
+  EngineVersion:
+    Default: 5.7.mysql_aurora.2.08.2
+    Type: String
+
+  KmsKeyId:
+    Default: none
+    Type: String
+
+  MasterUsername:
+    Default: root
+    Type: String
+
+  MasterUserPassword:
+    Default: password
+    Type: String
+
+  Port:
+    Default: 3306
     Type: String
 
   Sequence:
     Default: 1
+    Type: String
+
+  SnapshotIdentifier:
+    Default: none
     Type: String
 
   Stage:
@@ -33,6 +61,8 @@ Parameters:
 Conditions:
 
   HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
+  HasKmsKeyId: !Not [ !Equals [ !Ref KmsKeyId, none ] ]
+  HasSnapshotIdentifier: !Not [ !Equals [ !Ref SnapshotIdendifiter, none ] ]
 
 Resources:
 
@@ -68,10 +98,14 @@ Resources:
       DeletionProtection: !Ref DeletionProtection
       EnableCloudwatchLogsExports:
         - slowquery
-      Engine: aurora-mysql
-      EngineVersion: 5.7.mysql_aurora.2.07.1
-      MasterUsername: root
-      MasterUserPassword: test1234
+      Engine: !Ref Engine
+      EngineVersion: !Ref EngineVersion
+      KmsKeyId: !If [ HasKmsKeyId, !Ref KmsKeyId, !Ref 'AWS::NoValue' ]
+      MasterUsername: !Ref MasterUsername
+      MasterUserPassword: !Ref MasterUserPassword
+      Port: !Ref Port
+      SnapshotIdentifier: !If [ HasSnapshotIdentifier, !Ref SnapshotIdendifiter, !Ref 'AWS::NoValue' ]
+      StorageEncrypted: !If [ HasKmsKeyId, true, false ]
       VpcSecurityGroupIds:
         - !Ref SecurityGroup
 
@@ -100,5 +134,11 @@ Outputs:
   InstanceParameterGroup:
     Value: !Ref InstanceParameterGroup
 
+  ReadEndpoint:
+    Value: !GetAtt RdsCluster.ReadEndpoint.Address
+
   SecurityGroup:
     Value: !Ref SecurityGroup
+
+  WriteEndpoint:
+    Value: !GetAtt RdsCluster.Endpoint.Address
