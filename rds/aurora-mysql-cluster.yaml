@@ -134,11 +134,20 @@ Outputs:
   InstanceParameterGroup:
     Value: !Ref InstanceParameterGroup
 
+  Password:
+    Value: !Ref MasterUserPassword
+
+  Port:
+    Value: !Ref Port
+
   ReadEndpoint:
     Value: !GetAtt RdsCluster.ReadEndpoint.Address
 
   SecurityGroup:
     Value: !Ref SecurityGroup
+
+  UserName:
+    Value: !Ref MasterUsername
 
   WriteEndpoint:
     Value: !GetAtt RdsCluster.Endpoint.Address
