@@ -62,7 +62,7 @@ Conditions:
 
   HasDatabaseName: !Not [ !Equals [ !Ref DatabaseName, none ] ]
   HasKmsKeyId: !Not [ !Equals [ !Ref KmsKeyId, none ] ]
-  HasSnapshotIdentifier: !Not [ !Equals [ !Ref SnapshotIdendifiter, none ] ]
+  HasSnapshotIdentifier: !Not [ !Equals [ !Ref SnapshotIdentifier, none ] ]
 
 Resources:
 
@@ -104,7 +104,7 @@ Resources:
       MasterUsername: !Ref MasterUsername
       MasterUserPassword: !Ref MasterUserPassword
       Port: !Ref Port
-      SnapshotIdentifier: !If [ HasSnapshotIdentifier, !Ref SnapshotIdendifiter, !Ref 'AWS::NoValue' ]
+      SnapshotIdentifier: !If [ HasSnapshotIdentifier, !Ref SnapshotIdentifier, !Ref 'AWS::NoValue' ]
       StorageEncrypted: !If [ HasKmsKeyId, true, false ]
       VpcSecurityGroupIds:
         - !Ref SecurityGroup
