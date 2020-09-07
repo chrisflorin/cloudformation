@@ -22,10 +22,10 @@ Parameters:
     Default: internet-facing
     Type: String
 
-  LoadBalancerSubnetIdList:
+  Stage:
     Type: String
 
-  Stage:
+  SubnetIdList:
     Type: String
 
   Type:
@@ -94,5 +94,5 @@ Outputs:
   LoadBalancerArn:
     Value: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
 
-  LoadBalancerListener:
+  LoadBalancerListenerArn:
     Value: !If [ CreateHttpsListener, !Ref LoadBalancerHttpsListener, !Ref LoadBalancerHttpListener ]
