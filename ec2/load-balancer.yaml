@@ -38,7 +38,7 @@ Conditions:
 
   CreateHttpListener: !Equals [ !Ref CertificateArn, none ]
   CreateHttpsListener: !Not [ !Equals [ !Ref CertificateArn, none ] ]
-  CreateLoadBalancer: !Not [ !Equals [ !Ref LoadBalancerArn, none ] ]
+  CreateLoadBalancer: !Equals [ !Ref LoadBalancerArn, none ]
 
 Resources:
 
