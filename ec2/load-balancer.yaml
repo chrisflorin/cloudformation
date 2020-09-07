@@ -1,0 +1,94 @@
+#AWSTemplateFormatVersion: 2010-09-09
+#Description: ---
+#Metadata:
+
+Parameters:
+
+  ApplicationName:
+    Type: String
+
+  CertificateArn:
+    Default: none
+    Type: String
+
+  LoadBalancerArn:
+    Default: none
+    Type: String
+
+  LoadBalancerScheme:
+    AllowedValues:
+      - internal
+      - internet-facing
+    Default: internet-facing
+    Type: String
+
+  Stage:
+    Type: String
+
+  LoadBalancerSubnetIdList:
+    Type: String
+
+#Mappings:
+
+Conditions:
+
+  CreateHttpListener: !Equals [ !Ref CertificateArn, none ]
+  CreateHttpsListener: !Not [ !Equals [ !Ref CertificateArn, none ] ]
+  CreateLoadBalancer: !Not [ !Equals [ !Ref LoadBalancerArn, none ] ]
+
+Resources:
+
+#1) Load Balancer
+  LoadBalancer:
+    Condition: CreateLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: !Sub ${ApplicationName}-${Stage}-app-lb
+      Scheme: !Ref LoadBalancerScheme
+      Subnets: !Split [ ',', !Ref SubnetIdList ]
+      Type: application
+
+#2) Load Balancer Listener
+  LoadBalancerHttpListener:
+    Condition: CreateHttpListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+  #      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsListener:
+    Condition: CreateHttpsListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref Certificate
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 443
+      Protocol: HTTPS
+  #      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsRedirectListener:
+    Condition: CreateHttpsListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - RedirectConfig:
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+            Port: 443
+          Type: redirect
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+#      SslPolicy: !Ref SslPolicy
+
+Outputs:
+
+  LoadBalancerArn:
+    Value: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+
+  LoadBalancerListener:
+    Value: !If [ CreateHttpsListener, !Ref LoadBalancerHttpsListener, !Ref LoadBalancerHttpListener ]

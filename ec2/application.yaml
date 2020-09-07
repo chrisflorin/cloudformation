@@ -41,6 +41,10 @@ Parameters:
     Default: none
     Type: String
 
+  LoadBalancerListener:
+    Default: none
+    Type: String
+
   Port:
     Default: 80
     Type: String
@@ -87,6 +91,7 @@ Conditions:
 
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CodeDeployApplication, none ] ]
   CreateElasticFileSystem: !Equals [ !Ref CreateElasticFileSystem, true ]
+  CreateLoadBalancerListenerRule: !Not [ !Equals [ !Ref LoadBalancerListener, none ] ]
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
   HasPublicIpAddress: !Equals [ !Ref AssociatePublicIpAddress, true ]
 
@@ -135,6 +140,18 @@ Resources:
       TargetGroupARNs:
         - !Ref TargetGroup
       VPCZoneIdentifier: !Ref SubnetIdList
+
+#3) Load Balancer Listener Rule:
+  LoadBalancerListenerRule:
+    Condition: CreateLoadBalancerListenerRule
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - TargetGroupArn: !Ref TargetGroup
+      Conditions:
+        - RuleCondition
+      ListenerArn: !Ref LoadBalancerListener
+      Priority: Integer
 
 #4) Target Group
   TargetGroup:
