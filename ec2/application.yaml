@@ -179,6 +179,7 @@ Resources:
     Properties:
       DefaultActions:
         - TargetGroupArn: !Ref TargetGroup
+          Type: forward
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: 80
       Protocol: HTTP
@@ -192,6 +193,7 @@ Resources:
         - CertificateArn: !Ref CertificateArn
       DefaultActions:
         - TargetGroupArn: !Ref TargetGroup
+          Type: forward
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: 443
       Protocol: HTTPS
