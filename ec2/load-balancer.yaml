@@ -29,7 +29,7 @@ Parameters:
     Type: String
 
   Type:
-    Default: app
+    Default: application
     Type: String
 
 #Mappings:
@@ -51,7 +51,7 @@ Resources:
       Name: !Sub ${ApplicationName}-${Stage}-${Type}-lb
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Split [ ',', !Ref SubnetIdList ]
-      Type: application
+      Type: !Ref Type
 
 #2) Load Balancer Listener
   LoadBalancerHttpListener:
