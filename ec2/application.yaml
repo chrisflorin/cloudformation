@@ -14,7 +14,7 @@ Parameters:
     Default: false
     Type: String
 
-  Certificate:
+  CertificateArn:
     Default: none
     Type: String
 
@@ -41,8 +41,26 @@ Parameters:
     Default: none
     Type: String
 
-  LoadBalancerListener:
+  LoadBalancerArn:
     Default: none
+    Type: String
+
+  LoadBalancerListenerArn:
+    Default: none
+    Type: String
+
+  LoadBalancerScheme:
+    AllowedValues:
+      - internal
+      - internet-facing
+    Default: internet-facing
+    Type: String
+
+  LoadBalancerType:
+    AllowedValues:
+      - application
+      - network
+    Default: application
     Type: String
 
   Port:
@@ -91,7 +109,10 @@ Conditions:
 
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CodeDeployApplication, none ] ]
   CreateElasticFileSystem: !Equals [ !Ref CreateElasticFileSystem, true ]
-  CreateLoadBalancerListenerRule: !Not [ !Equals [ !Ref LoadBalancerListener, none ] ]
+  CreateHttpListener: !Equals [ !Ref CertificateArn, none ]
+  CreateHttpsListener: !Not [ !Equals [ !Ref CertificateArn, none ] ]
+  CreateLoadBalancer: !Equals [ !Ref LoadBalancerArn, none ]
+  CreateLoadBalancerListenerRule: !Not [ !Equals [ !Ref LoadBalancerListenerArn, none ] ]
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
   HasPublicIpAddress: !Equals [ !Ref AssociatePublicIpAddress, true ]
 
@@ -141,7 +162,56 @@ Resources:
         - !Ref TargetGroup
       VPCZoneIdentifier: !Ref SubnetIdList
 
-#3) Load Balancer Listener Rule:
+#3) Load Balancer:
+  LoadBalancer:
+    Condition: CreateLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: !Sub ${ApplicationName}-${Stage}-${Type}-lb-${Sequence}
+      Scheme: !Ref LoadBalancerScheme
+      Subnets: !Split [ ',', !Ref SubnetIdList ]
+      Type: !Ref LoadBalancerType
+
+  LoadBalancerHttpListener:
+    Condition: CreateHttpListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 80
+      Protocol: HTTP
+  #      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsListener:
+    Condition: CreateHttpsListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 443
+      Protocol: HTTPS
+  #      SslPolicy: !Ref SslPolicy
+
+  LoadBalancerHttpsRedirectListener:
+    Condition: CreateHttpsListener
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - RedirectConfig:
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+            Port: 443
+          Type: redirect
+      LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
+      Port: 80
+      Protocol: HTTP
+#      SslPolicy: !Ref SslPolicy
+
   LoadBalancerListenerRule:
     Condition: CreateLoadBalancerListenerRule
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -150,7 +220,7 @@ Resources:
         - TargetGroupArn: !Ref TargetGroup
       Conditions:
         - RuleCondition
-      ListenerArn: !Ref LoadBalancerListener
+      ListenerArn: !Ref LoadBalancerListenerArn
       Priority: Integer
 
 #4) Target Group
