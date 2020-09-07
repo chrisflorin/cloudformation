@@ -68,7 +68,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       Certificates:
-        - CertificateArn: !Ref Certificate
+        - CertificateArn: !Ref CertificateArn
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: 443
       Protocol: HTTPS
