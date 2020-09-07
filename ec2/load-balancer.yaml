@@ -22,6 +22,10 @@ Parameters:
     Default: internet-facing
     Type: String
 
+  Sequence:
+    Default: 1
+    Type: String
+
   Stage:
     Type: String
 
@@ -48,7 +52,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Sub ${ApplicationName}-${Stage}-${Type}-lb
+      Name: !Sub ${ApplicationName}-${Stage}-${Type}-lb-${Sequence}
       Scheme: !Ref LoadBalancerScheme
       Subnets: !Split [ ',', !Ref SubnetIdList ]
       Type: !Ref Type
