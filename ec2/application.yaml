@@ -303,6 +303,15 @@ Resources:
                   - 's3:*'
                 Resource:
                   - '*'
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-systemsmanager-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ssm:*'
+                Resource:
+                  - '*'
 
 #9) CodeDeploy Group
   CodeDeployGroup:
