@@ -124,6 +124,9 @@ Resources:
 
 Outputs:
 
+  DnsName:
+    Value: !GetAtt LoadBalancer.DNSName
+
   LoadBalancerArn:
     Value: !Ref LoadBalancer
 
