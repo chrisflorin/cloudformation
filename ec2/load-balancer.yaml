@@ -7,6 +7,10 @@ Parameters:
   ApplicationName:
     Type: String
 
+  CertificateArn:
+    Default: none
+    Type: String
+
   LoadBalancerScheme:
     AllowedValues:
       - internal
@@ -34,13 +38,11 @@ Conditions:
 
   CreateHttpListener: !Equals [ !Ref CertificateArn, none ]
   CreateHttpsListener: !Not [ !Equals [ !Ref CertificateArn, none ] ]
-  CreateLoadBalancer: !Equals [ !Ref LoadBalancerArn, none ]
 
 Resources:
 
 #1) Load Balancer
   LoadBalancer:
-    Condition: CreateLoadBalancer
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
