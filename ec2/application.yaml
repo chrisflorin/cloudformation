@@ -262,8 +262,8 @@ Resources:
       DeploymentConfigName: CodeDeployDefault.OneAtATime
       DeploymentGroupName: !Sub ${ApplicationName}-${Stage}-${Sequence}
       DeploymentStyle:
-        - DeploymentOption: !If [ CreateLoadBalancerListenerRule, WITH_TRAFFIC_CONTROL, WITHOUT_TRAFFIC_CONTROL ]
-          DeploymentType: IN_PLACE
+        DeploymentOption: !If [ CreateLoadBalancerListenerRule, WITH_TRAFFIC_CONTROL, WITHOUT_TRAFFIC_CONTROL ]
+        DeploymentType: IN_PLACE
       LoadBalancerInfo:
         !If
         - CreateLoadBalancerListenerRule
