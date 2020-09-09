@@ -7,14 +7,6 @@ Parameters:
   ApplicationName:
     Type: String
 
-  CertificateArn:
-    Default: none
-    Type: String
-
-  LoadBalancerArn:
-    Default: none
-    Type: String
-
   LoadBalancerScheme:
     AllowedValues:
       - internal
@@ -52,8 +44,10 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: !Sub ${ApplicationName}-${Stage}-${Type}-lb-${Sequence}
+      Name: !Sub ${ApplicationName}-${Stage}-lb-${Sequence}
       Scheme: !Ref LoadBalancerScheme
+      SecurityGroups:
+        - !Ref SecurityGroup
       Subnets: !Split [ ',', !Ref SubnetIdList ]
       Type: !Ref Type
 
@@ -62,6 +56,9 @@ Resources:
     Condition: CreateHttpListener
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
+      DefaultActions:
+        - FixedResponseConfig:
+            StatusCode: 502
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
@@ -73,6 +70,9 @@ Resources:
     Properties:
       Certificates:
         - CertificateArn: !Ref CertificateArn
+      DefaultActions:
+        - FixedResponseConfig:
+            StatusCode: 502
       LoadBalancerArn: !If [ CreateLoadBalancer, !Ref LoadBalancer, !Ref LoadBalancerArn ]
       Port: 443
       Protocol: HTTPS
@@ -93,6 +93,17 @@ Resources:
       Protocol: HTTP
 #      SslPolicy: !Ref SslPolicy
 
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ApplicationName}-${Stage}-lb-${Sequence}-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !If [ CreateHttpListener, 80, 443 ]
+          ToPort: !If [ CreateHttpListener, 80, 443 ]
+          CidrIp: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
+      VpcId: !Ref VpcId
+
 Outputs:
 
   LoadBalancerArn:
@@ -100,3 +111,6 @@ Outputs:
 
   LoadBalancerListenerArn:
     Value: !If [ CreateHttpsListener, !Ref LoadBalancerHttpsListener, !Ref LoadBalancerHttpListener ]
+
+  SecurityGroup:
+    Value: !Ref SecurityGroup
