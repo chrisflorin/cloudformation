@@ -32,6 +32,12 @@ Parameters:
     Default: application
     Type: String
 
+  VpcCidr:
+    Type: String
+
+  VpcId:
+    Type: String
+
 #Mappings:
 
 Conditions:
