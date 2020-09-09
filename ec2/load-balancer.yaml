@@ -110,9 +110,16 @@ Resources:
       GroupDescription: !Sub ${ApplicationName}-${Stage}-lb-${Sequence}-security-group
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: !If [ CreateHttpListener, 80, 443 ]
-          ToPort: !If [ CreateHttpListener, 80, 443 ]
+          FromPort: 80
+          ToPort: 80
           CidrIp: !If [ IsInternetFacing, '0.0.0.0/0', !Ref VpcCidr ]
+        - !If
+          - CreateHttpsListener
+          - IpProtocol: tcp
+            FromPort: 443
+            ToPort: 443
+            CidrIp: !If [ IsInternetFacing, '0.0.0.0/0', !Ref VpcCidr ]
+          - !Ref 'AWS::NoValue'
       VpcId: !Ref VpcId
 
 Outputs:
