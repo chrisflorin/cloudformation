@@ -44,6 +44,7 @@ Conditions:
 
   CreateHttpListener: !Equals [ !Ref CertificateArn, none ]
   CreateHttpsListener: !Not [ !Equals [ !Ref CertificateArn, none ] ]
+  IsInternetFacing: !Equals [ !Ref LoadBalancerScheme, internet-facing ]
 
 Resources:
 
@@ -109,7 +110,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: !If [ CreateHttpListener, 80, 443 ]
           ToPort: !If [ CreateHttpListener, 80, 443 ]
-          CidrIp: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
+          CidrIp: !If [ IsInternetFacing, '0.0.0.0/0', !Ref VpcCidr ]
       VpcId: !Ref VpcId
 
 Outputs:
