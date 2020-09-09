@@ -139,8 +139,10 @@ Resources:
       TargetGroupARNs:
         !If
         - CreateLoadBalancerListenerRule
-        - !Ref TargetGroup
-        - !Ref 'AWS::NoValue'
+        -
+          - !Ref TargetGroup
+        -
+          - !Ref 'AWS::NoValue'
       VPCZoneIdentifier: !Ref SubnetIdList
 
 #3) Load Balancer Rule:
