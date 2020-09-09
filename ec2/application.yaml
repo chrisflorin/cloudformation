@@ -151,7 +151,7 @@ Resources:
             Values:
               - !Ref Host
       ListenerArn: !Ref LoadBalancerListenerArn
-      Priority: Integer
+      Priority: 1
 
 #4) Target Group
   TargetGroup:
