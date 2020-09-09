@@ -127,6 +127,9 @@ Resources:
       MaxSize: '1'
       MinSize: '1'
       Tags:
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+          PropagateAtLaunch: true
         - Key: Name
           Value: !Sub ${AWS::StackName}
           PropagateAtLaunch: true
