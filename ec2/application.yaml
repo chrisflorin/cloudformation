@@ -137,7 +137,10 @@ Resources:
           Value: !Ref Stage
           PropagateAtLaunch: true
       TargetGroupARNs:
+        !If
+        - CreateLoadBalancerListenerRule
         - !Ref TargetGroup
+        - !Ref 'AWS::NoValue'
       VPCZoneIdentifier: !Ref SubnetIdList
 
 #3) Load Balancer Rule:
@@ -158,6 +161,7 @@ Resources:
 
 #4) Target Group
   TargetGroup:
+    Condition: CreateLoadBalancerListenerRule
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckEnabled: true
@@ -255,9 +259,18 @@ Resources:
         - !Ref AutoScalingGroup
       DeploymentConfigName: CodeDeployDefault.OneAtATime
       DeploymentGroupName: !Sub ${ApplicationName}-${Stage}-${Sequence}
+      DeploymentStyle:
+        !If
+        - CreateLoadBalancerListenerRule
+        - DeploymentOption: WITH_TRAFFIC_CONTROL
+          DeploymentType: IN_PLACE
+        - !Ref 'AWS::NoValue'
       LoadBalancerInfo:
-        TargetGroupInfoList:
-          - Name: !GetAtt TargetGroup.TargetGroupName
+        !If
+        - CreateLoadBalancerListenerRule
+        - TargetGroupInfoList:
+            - Name: !GetAtt TargetGroup.TargetGroupName
+        - !Ref 'AWS::NoValue'
       ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
 
 Outputs:
