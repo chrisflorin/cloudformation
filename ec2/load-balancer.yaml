@@ -68,6 +68,7 @@ Resources:
       DefaultActions:
         - FixedResponseConfig:
             StatusCode: 502
+          Type: fixed-response
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
@@ -82,6 +83,7 @@ Resources:
       DefaultActions:
         - FixedResponseConfig:
             StatusCode: 502
+          Type: fixed-response
       LoadBalancerArn: !Ref LoadBalancer
       Port: 443
       Protocol: HTTPS
