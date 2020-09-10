@@ -127,6 +127,9 @@ Outputs:
   DnsName:
     Value: !GetAtt LoadBalancer.DNSName
 
+  HostedZoneId:
+    Value: !GetAtt LoadBalancer.CanonicalHostedZoneID
+
   LoadBalancerArn:
     Value: !Ref LoadBalancer
 
