@@ -232,6 +232,18 @@ Resources:
                   - ec2:DescribeTags
                 Resource:
                   - '*'
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-cloudwatch-policy
+          PolicyDocyment:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource:
+                  - '*'
         - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-codedeploy-policy
           PolicyDocument:
             Version: 2012-10-17
