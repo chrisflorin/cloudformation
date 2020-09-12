@@ -230,6 +230,7 @@ Resources:
                 Action:
                   - ec2:AssociateAddress
                   - ec2:DescribeTags
+                  - ec2messages:GetMessages
                 Resource:
                   - '*'
         - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-cloudwatch-policy
