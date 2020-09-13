@@ -43,7 +43,7 @@ Resources:
       EstimatedInstanceWarmup: !Ref Warmup
       PolicyType: !Ref PolicyType
       TargetTrackingConfiguration:
-        PredefinedMatricSpecification: ASGAverageCPUUtilization
+        PredefinedMetricSpecification: ASGAverageCPUUtilization
         TargetValue: !Ref TargetCpuUtilization
 
 #Outputs:
