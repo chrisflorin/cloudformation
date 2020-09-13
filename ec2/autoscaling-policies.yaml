@@ -38,7 +38,7 @@ Resources:
     Condition: IsTargetTrackingScalingPolicyType
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
-      AutoScalingGroupName: !Ref AutoScalingGroup
+      AutoScalingGroupName: !Ref AutoScalingGroupName
       Cooldown: !Ref Cooldown
       EstimatedInstanceWarmup: !Ref Warmup
       PolicyType: !Ref PolicyType
