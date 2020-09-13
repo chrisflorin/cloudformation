@@ -170,7 +170,7 @@ Resources:
           - !Ref TargetGroup
         -
           - !Ref 'AWS::NoValue'
-      TerminationPolicies: !Split [ ',', !Ref AutoScalingTerminationPolicies ]
+      TerminationPolicies: !Ref AutoScalingTerminationPolicies
       VPCZoneIdentifier: !Ref SubnetIdList
 
 #3) Load Balancer Rule:
