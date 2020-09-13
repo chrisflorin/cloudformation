@@ -26,6 +26,10 @@ Parameters:
     Default: false
     Type: String
 
+  DefaultKmsKeyArn:
+    Default: '*'
+    Type: String
+
   HealthCheckPath:
     Default: '/api/health-check'
     Type: String
@@ -245,13 +249,24 @@ Resources:
                   - logs:DescribeLogStreams
                 Resource:
                   - '*'
-        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-codedeploy-policy
+        - PolicyName: !Sub ${AppilcationName}-${Aws::Region}-${Stage}-kms-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                Resource:
+                  - !Ref DefaultKmsKeyArn
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-s3-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
                   - 's3:*'
+                  #Explicitly setting this so it's not forgotten when permissions are restricted
+                  - s3:GetEncryptionConfiguration
                 Resource:
                   - '*'
         - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-systemsmanager-policy
@@ -261,6 +276,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - 'ssm:*'
+                  - ssmmessages:CreateControlChannel
+                  - ssmmessages:CreateDataChannel
+                  - ssmmessages:OpenControlChannel
+                  - ssmmessages:OpenDatachannel
                 Resource:
                   - '*'
 
