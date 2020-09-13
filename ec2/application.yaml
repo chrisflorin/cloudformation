@@ -14,6 +14,26 @@ Parameters:
     Default: false
     Type: String
 
+  AutoScalingDesiredCapacity:
+    Default: 1
+    Type: String
+
+  AutoScalingMaxInstanceLifetime:
+    Default: none
+    Type: String
+
+  AutoScalingMaximum:
+    Default: 1
+    Type: String
+
+  AutoScalingMinimum:
+    Default: 1
+    Type: String
+
+  AutoScalingTerminationPolicies:
+    Default: OldestLaunchTemplate,OldestInstance
+    Type: CommaDelimitedList
+
   CodeDeployApplication:
     Default: none
     Type: String
@@ -92,6 +112,7 @@ Conditions:
   CreateCodeDeployGroup: !Not [ !Equals [ !Ref CodeDeployApplication, none ] ]
   CreateElasticFileSystem: !Equals [ !Ref CreateElasticFileSystem, true ]
   CreateLoadBalancerListenerRule: !Not [ !Equals [ !Ref LoadBalancerListenerArn, none ] ]
+  HasAutoScalingMaxInstanceLifetime: !Not [ !Equals [ !Ref AutoScalingMaxInstanceLifetime, none ] ]
   HasKeyName: !Not [ !Equals [ !Ref KeyName, none ] ]
   HasPublicIpAddress: !Equals [ !Ref AssociatePublicIpAddress, true ]
 
@@ -125,11 +146,13 @@ Resources:
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
+      DesiredCapacity: !Ref AutoScalingDesiredCapacity
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate
         Version: !GetAtt LaunchTemplate.LatestVersionNumber
-      MaxSize: '1'
-      MinSize: '1'
+      MaxInstanceLifetime: !If [ HasAutoScalingMaxInstanceLifetime, !Ref AutoScalingMaxInstanceLifetime, !Ref 'AWS::NoValue' ]
+      MaxSize: !Ref AutoScalingMaximum
+      MinSize: !Ref AutoScalingMinimum
       Tags:
         - Key: ApplicationName
           Value: !Ref ApplicationName
@@ -147,6 +170,7 @@ Resources:
           - !Ref TargetGroup
         -
           - !Ref 'AWS::NoValue'
+      TerminationPolicies: !Split [ ',', !Ref AutoScalingTerminationPolicies ]
       VPCZoneIdentifier: !Ref SubnetIdList
 
 #3) Load Balancer Rule:
@@ -305,6 +329,9 @@ Resources:
       ServiceRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/CodeDeployServiceRole'
 
 Outputs:
+
+  AutoScalingGroup:
+    Value: !Ref AutoScalingGroup
 
   Cidr:
     Value: !If [ HasPublicIpAddress, '0.0.0.0/0', !Ref VpcCidr ]
