@@ -249,7 +249,7 @@ Resources:
                   - logs:DescribeLogStreams
                 Resource:
                   - '*'
-        - PolicyName: !Sub ${AppilcationName}-${Aws::Region}-${Stage}-kms-policy
+        - PolicyName: !Sub ${ApplicationName}-${AWS::Region}-${Stage}-kms-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
