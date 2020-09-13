@@ -16,6 +16,7 @@ Parameters:
       - SimpleScaling
       - StepScaling
       - TargetTrackingScaling
+    Type: String
 
   TargetCpuUtilization:
     Default: 10
