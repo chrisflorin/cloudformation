@@ -97,3 +97,8 @@ Resources:
               - 's3:GetObject'
             Resource:
               - !Join [ '', [ !GetAtt S3Bucket.Arn, '/*' ] ]
+
+Outputs:
+
+  S3BucketName:
+    Value: !Ref S3Bucket
