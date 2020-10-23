@@ -40,6 +40,8 @@ Resources:
             - GET
             - HEAD
           Compress: true
+          ForwardedValues:
+            QueryString: false
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
         DefaultRootObject: index.html
